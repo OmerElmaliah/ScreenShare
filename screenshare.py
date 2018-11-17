@@ -1,15 +1,24 @@
 """Main Class - Initiates Components"""
 from PyQt5 import QtWidgets
-from app.main_window import MainWindow
+from App.main_window import MainWindow
 import sys
+import threading
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = QtWidgets.QMainWindow()
+
+
+def initiat_main():
+    MainWindow(window)
 
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)
-    window = QtWidgets.QMainWindow()
-    MainWindow(window)
+    main_thread = threading.Thread(target=initiat_main)
+    main_thread.daemon = True
+    main_thread.start()
     window.show()
-    sys.exit(app.exec_())
+    app.exec_()
 
 
 if __name__ == '__main__':
