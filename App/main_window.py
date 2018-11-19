@@ -1,55 +1,34 @@
 from PyQt5 import QtCore, QtWidgets
-from customer import Customer
-from handler import Handler
-import threading
 
 
 class MainWindow(object):
-    def __init__(self, window):
-        self.window = window
-        self.window.setObjectName("main_window")
-        self.window.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(self.window)
+    def setupUi(self, window):
+        window.setObjectName("MainWindow")
+        window.resize(800, 600)
+        self.centralwidget = QtWidgets.QWidget(window)
         self.centralwidget.setObjectName("centralwidget")
-
-        self.handler_button = QtWidgets.QPushButton(self.centralwidget)
-        self.handler_button.setGeometry(QtCore.QRect(120, 210, 201, 101))
-        self.handler_button.setObjectName("handler_button")
-        self.handler_button.clicked.connect(self.create_handler)
-
+        self.handle_button = QtWidgets.QPushButton(self.centralwidget)
+        self.handle_button.setGeometry(QtCore.QRect(150, 210, 201, 91))
+        self.handle_button.setObjectName("handle_button")
         self.customer_button = QtWidgets.QPushButton(self.centralwidget)
-        self.customer_button.setGeometry(QtCore.QRect(480, 210, 221, 101))
+        self.customer_button.setGeometry(QtCore.QRect(460, 210, 201, 91))
         self.customer_button.setObjectName("customer_button")
-        self.customer_button.clicked.connect(self.create_customer)
-
-        self.window.setCentralWidget(self.centralwidget)
-
-        self.menubar = QtWidgets.QMenuBar(self.window)
+        window.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
         self.menubar.setObjectName("menubar")
-        self.window.setMenuBar(self.menubar)
-
-        self.statusbar = QtWidgets.QStatusBar(self.window)
+        window.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
-        self.window.setStatusBar(self.statusbar)
+        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslate_ui()
-        QtCore.QMetaObject.connectSlotsByName(self.window)
+        self.retranslateUi(window)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslate_ui(self):
+    def retranslateUi(self, window):
         _translate = QtCore.QCoreApplication.translate
-        self.window.setWindowTitle(_translate("main_window", "Main Window"))
-        self.handler_button.setText(_translate("main_window", "Handle"))
-        self.customer_button.setText(_translate("main_window", "Customer"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.handle_button.setText(_translate("MainWindow", "Handle"))
+        self.customer_button.setText(_translate("MainWindow", "Customer"))
 
-    def create_customer(self):
-        customer = Customer('10.0.0.1', 8888)
-        customer_thread = threading.Thread(target=customer.start_work)
-        customer_thread.daemon = True
-        customer_thread.start()
 
-    def create_handler(self):
-        handler = Handler('10.0.0.1', 8888, self.window)
-        handler_thread = threading.Thread(target=handler.recv_img)
-        handler_thread.daemon = True
-        handler_thread.start()
