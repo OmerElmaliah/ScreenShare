@@ -13,9 +13,9 @@ def setup_main():
 
 
 def main():
-    main_thread = multiprocessing.Process(target=setup_main)
-    main_thread.start()
-    main_thread.join()
+    main_process = multiprocessing.Process(target=setup_main)
+    main_process.start()
+    main_process.join()
 
 
 if __name__ == '__main__':
