@@ -1,34 +1,24 @@
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtWidgets
+from App.main_window_ui import MainWindowUi
+from customer import Customer
+from handler import Handler
+import multiprocessing
 
 
-class MainWindow(object):
-    def setupUi(self, window):
-        window.setObjectName("MainWindow")
-        window.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(window)
-        self.centralwidget.setObjectName("centralwidget")
-        self.handle_button = QtWidgets.QPushButton(self.centralwidget)
-        self.handle_button.setGeometry(QtCore.QRect(150, 210, 201, 91))
-        self.handle_button.setObjectName("handle_button")
-        self.customer_button = QtWidgets.QPushButton(self.centralwidget)
-        self.customer_button.setGeometry(QtCore.QRect(460, 210, 201, 91))
-        self.customer_button.setObjectName("customer_button")
-        window.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(window)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
-        self.menubar.setObjectName("menubar")
-        window.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+class MainWindow(QtWidgets.QMainWindow, MainWindowUi):
+    def __init__(self):
+        QtWidgets.QMainWindow.__init__(self)
+        self.setup_ui(self)
+        self.customer_button.clicked.connect(self.create_customer)
 
-        self.retranslateUi(window)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def create_customer(self):
+        customer = Customer('192.168.1.174', 8888)
+        customer_process = multiprocessing.Process(target=customer.start_work)
+        customer_process.daemon = True
+        customer_process.start()
 
-    def retranslateUi(self, window):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.handle_button.setText(_translate("MainWindow", "Handle"))
-        self.customer_button.setText(_translate("MainWindow", "Customer"))
-
-
+    def create_handler(self):
+        handler = Handler('192.168.1.174', 8889)
+        handler_process = multiprocessing.Process(target=handler.recv_img)
+        handler_process.daemon = True
+        handler_process.start()

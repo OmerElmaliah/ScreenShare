@@ -2,23 +2,20 @@
 from PyQt5 import QtWidgets
 from App.main_window import MainWindow
 import sys
-import threading
+import multiprocessing
 
 
-app = QtWidgets.QApplication(sys.argv)
-window = QtWidgets.QMainWindow()
-
-
-def initiat_main():
-    MainWindow(window)
+def setup_main():
+    app = QtWidgets.QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    app.exec_()
 
 
 def main():
-    main_thread = threading.Thread(target=initiat_main)
-    main_thread.daemon = True
+    main_thread = multiprocessing.Process(target=setup_main)
     main_thread.start()
-    window.show()
-    app.exec_()
+    main_thread.join()
 
 
 if __name__ == '__main__':
