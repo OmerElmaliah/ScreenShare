@@ -13,6 +13,7 @@ class Handler(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.window = window
+        # Add a label
 
     def recv_img(self):
         while True:
@@ -34,6 +35,7 @@ class Handler(object):
                     self.window.setPixmap(img_display)
                     self.window.setScaledContents(True)
                     self.window.update()
+                    # Change to label
                     break
 
     def close_connection(self):
