@@ -16,7 +16,7 @@ class Customer(object):
     def start_work(self):
         while self.main_con:
             img = ImageGrab.grab()
-            img.thumbnail((1080, 1920), Image.ANTIALIAS)
+            img.thumbnail((576, 720), Image.ANTIALIAS)
             img.save('img.png')
 
             with open('img.png', 'rb') as screen_image:
