@@ -19,7 +19,8 @@ class MainWindow(QtWidgets.QMainWindow, MainWindowUi):
         customer_thread.start()
 
     def create_handler(self):
-        handler = Handler('10.0.0.1', 8886, '10.0.0.1', 8887, self)
+        handler = Handler('10.0.0.1', 8886, '10.0.0.1', 8887)
         handler_thread = threading.Thread(target=handler.recv_img)
         handler_thread.daemon = True
         handler_thread.start()
+        self.close()
