@@ -5,6 +5,7 @@ import sys
 import multiprocessing
 
 
+"""Initiates the app"""
 def setup_main():
     app = QtWidgets.QApplication(sys.argv)
     main_window = MainWindow()

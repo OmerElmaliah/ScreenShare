@@ -12,14 +12,16 @@ class MainWindow(QtWidgets.QMainWindow, MainWindowUi):
         self.customer_button.clicked.connect(self.create_customer)
         self.handle_button.clicked.connect(self.create_handler)
 
+    """Creates a variable type Customer and starts working"""
     def create_customer(self):
-        customer = Customer('10.0.0.1', 8886, '10.0.0.1', 8887)
+        customer = Customer('10.0.0.1', 8886, '10.0.0.4', 8887)
         customer_thread = threading.Thread(target=customer.start_work)
         customer_thread.daemon = True
         customer_thread.start()
 
+    """Creates a variable type Handler and starts working"""
     def create_handler(self):
-        handler = Handler('10.0.0.1', 8886, '10.0.0.1', 8887)
+        handler = Handler('10.0.0.1', 8886, '10.0.0.4', 8887)
         handler_thread = threading.Thread(target=handler.recv_img)
         handler_thread.daemon = True
         handler_thread.start()
