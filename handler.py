@@ -14,6 +14,7 @@ class Handler(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.window = QtWidgets.QLabel()
+        self.window.showMaximized()
         self.window.show()
 
     def recv_img(self):
@@ -40,3 +41,6 @@ class Handler(object):
 
     def close_connection(self):
         self.socket.close()
+
+
+# TODO: Create a filter function which will differentiate between mouseclicks/keyboard/recv_img commands

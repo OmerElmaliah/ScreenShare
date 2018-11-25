@@ -12,11 +12,12 @@ class Customer(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
+        # TODO: Add an exit button with exit_button_ui.py
 
     def start_work(self):
         while self.main_con:
             img = ImageGrab.grab()
-            img.thumbnail((576, 720), Image.ANTIALIAS)
+            img.thumbnail((1080, 720), Image.ANTIALIAS)
             img.save('img.png')
 
             with open('img.png', 'rb') as screen_image:
@@ -35,3 +36,5 @@ class Customer(object):
     def close_connection(self):
         self.main_con = False
         self.socket.close()
+
+# TODO: Detect mouse/keyboard input, if none send screenshot

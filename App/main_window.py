@@ -3,7 +3,6 @@ from App.main_window_ui import MainWindowUi
 from customer import Customer
 from handler import Handler
 import threading
-import multiprocessing
 
 
 class MainWindow(QtWidgets.QMainWindow, MainWindowUi):
@@ -15,14 +14,15 @@ class MainWindow(QtWidgets.QMainWindow, MainWindowUi):
 
     """Creates a variable type Customer and starts working"""
     def create_customer(self):
-        customer = Customer('10.0.0.1', 8886, '10.0.0.4', 8887)
-        customer_process = multiprocessing.Process(target=customer.start_work)
-        customer_process.daemon = True
-        customer_process.start()
+        customer = Customer('192.168.1.174', 8887, '192.168.1.157', 8886)
+        customer_thread = threading.Thread(target=customer.start_work)
+        customer_thread.daemon = True
+        customer_thread.start()
+        self.close()
 
     """Creates a variable type Handler and starts working"""
     def create_handler(self):
-        handler = Handler('10.0.0.1', 8886, '10.0.0.4', 8887)
+        handler = Handler('192.168.1.174', 8887, '192.168.1.157', 8886)
         handler_thread = threading.Thread(target=handler.recv_img)
         handler_thread.daemon = True
         handler_thread.start()
