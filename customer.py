@@ -3,7 +3,6 @@ import socket
 from PIL import ImageGrab, Image
 import pyautogui
 import pickle
-import time
 
 
 class Customer(object):
@@ -37,11 +36,11 @@ class Customer(object):
             screen_image.close()
 
     def recv_mouse_click(self):
-        mouse_input = pickle.loads(self.socket.recv(1024))
-        if (str(mouse_input) == "left") or (str(mouse_input) == "right"):
-            pyautogui.click(button=mouse_input)
-        else:
-            pyautogui.moveTo(mouse_input)
+        mouse_click = pickle.loads(self.socket.recv(1024))
+        mouse_loc = pickle.loads(self.socket.recv(1024))
+        if ("left" in mouse_click) or ("right" in mouse_click):
+            pyautogui.click(button=mouse_click)
+        pyautogui.moveTo(mouse_loc)
 
     def set_connection_status(self, con):
         self.main_con = con
@@ -49,3 +48,5 @@ class Customer(object):
     def close_connection(self):
         self.main_con = False
         self.socket.close()
+
+# TODO: Convert all pyautogui related lines to pynput

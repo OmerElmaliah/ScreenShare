@@ -4,7 +4,6 @@ from PyQt5.QtGui import QPixmap
 from PyQt5 import QtWidgets
 import os.path
 import win32api
-import time
 import pickle
 
 
@@ -60,7 +59,10 @@ class Handler(object):
             con = False
 
         if con:
-            self.socket.sendto(pickle.dumps(win32api.GetCursorPos()), (self.ip_dst, self.port_dst))
+            self.socket.sendto(pickle.dumps("false"), (self.ip_dst, self.port_dst))
+        self.socket.sendto(pickle.dumps(win32api.GetCursorPos()), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
         self.socket.close()
+
+# TODO: Convert all win32api related lines to pynput
