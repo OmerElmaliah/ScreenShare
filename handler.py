@@ -65,7 +65,7 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("right released"), (self.ip_dst, self.port_dst))
 
     def on_move(self, x, y):
-        self.socket.sendto(pickle.dumps(str((x, y))))
+        self.socket.sendto(pickle.dumps(str((x, y))), (self.ip_dst, self.port_dst))
 
     def on_scroll(self):
         pass
