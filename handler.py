@@ -67,11 +67,17 @@ class Handler(object):
 
     def on_move(self, x, y):
         cords = (x, y)
-        self.socket.sendto(cords, (self.ip_dst, self.port_dst))
+        self.socket.sendto(pickle.dumps(cords), (self.ip_dst, self.port_dst))
         time.sleep(0.09)
 
-    def on_scroll(self):
-        pass
+    def on_scroll(self, x, y, dx, dy):
+        msg = ""
+        if dy == 1:
+            msg = msg + "up "
+        elif dy == -1:
+            msg = msg + "down "
+
+        self.socket.sendto(pickle.dumps(msg), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
         self.socket.close()

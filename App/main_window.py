@@ -14,14 +14,14 @@ class MainWindow(QtWidgets.QMainWindow, MainWindowUi):
 
     """Creates a variable type Customer and starts working"""
     def create_customer(self):
-        customer = Customer('192.168.1.157', 8882, '192.168.1.174', 8883)
+        customer = Customer('192.168.1.174', 8883, '192.168.1.157', 8882)
         customer_thread = threading.Thread(target=customer.run)
         customer_thread.daemon = True
         customer_thread.start()
 
     """Creates a variable type Handler and starts working"""
     def create_handler(self):
-        handler = Handler('192.168.1.157', 8882, '192.168.1.174', 8883)
+        handler = Handler('192.168.1.174', 8883, '192.168.1.157', 8882)
         handler_thread = threading.Thread(target=handler.run)
         handler_thread.daemon = True
         handler_thread.start()

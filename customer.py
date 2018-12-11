@@ -47,6 +47,10 @@ class Customer(object):
                 pyautogui.mouseDown(button='left')
             elif "left" in data and "released" in data:
                 pyautogui.mouseUp(button='left')
+            elif "up" in data:
+                pyautogui.scroll(1)
+            elif "down" in data:
+                pyautogui.scroll(-1)
             else:
                 pyautogui.moveTo(data)
 
