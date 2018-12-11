@@ -11,8 +11,6 @@ REQUIRES THE FOLLOWING MODULES:
 - pickle
 - pyautogui
 - PIL
-- win32api
-
 
 
 CURRENTLY A WORK IN PROGRESS.
