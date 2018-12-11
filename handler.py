@@ -4,7 +4,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5 import QtWidgets
 import os.path
 import threading
-from pynput import mouse
+from pynput import mouse, keyboard
 import pickle
 import time
 
@@ -49,11 +49,19 @@ class Handler(object):
                     break
 
     def event_listener(self):
-        with mouse.Listener(
+        listener_keyboard = keyboard.Listener(
+                on_press=self.on_press,
+                on_release=self.on_release)
+
+        listener_mouse = mouse.Listener(
                 on_move=self.on_move,
                 on_click=self.on_click,
-                on_scroll=self.on_scroll) as listener:
-            listener.join()
+                on_scroll=self.on_scroll)
+
+        listener_mouse.start()
+        listener_keyboard.start()
+        listener_mouse.join()
+        listener_keyboard.join()
 
     def on_click(self, x, y, button, pressed):
         if button == mouse.Button.left and pressed:
@@ -71,13 +79,20 @@ class Handler(object):
         time.sleep(0.09)
 
     def on_scroll(self, x, y, dx, dy):
-        msg = ""
         if dy == 1:
-            msg = msg + "up "
+            self.socket.sendto(pickle.dumps("up"), (self.ip_dst, self.port_dst))
         elif dy == -1:
-            msg = msg + "down "
+            self.socket.sendto(pickle.dumps("down"), (self.ip_dst, self.port_dst))
+        elif dx == 1:
+            self.socket.sendto(pickle.dumps("rig2"), (self.ip_dst, self.port_dst))
+        elif dx == -1:
+            self.socket.sendto(pickle.dumps("lef2"), (self.ip_dst, self.port_dst))
 
-        self.socket.sendto(pickle.dumps(msg), (self.ip_dst, self.port_dst))
+    def on_press(self, key):
+        print(key)
+
+    def on_release(self, key):
+        print(key)
 
     def close_connection(self):
         self.socket.close()

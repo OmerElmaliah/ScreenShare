@@ -51,9 +51,12 @@ class Customer(object):
                 pyautogui.scroll(1)
             elif "down" in data:
                 pyautogui.scroll(-1)
+            elif "rig2" in data:
+                pyautogui.hscroll(1)
+            elif "lef2" in data:
+                pyautogui.hscroll(-1)
             else:
                 pyautogui.moveTo(data)
-
 
     def set_connection_status(self, con):
         self.main_con = con
