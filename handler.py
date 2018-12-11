@@ -6,6 +6,7 @@ import os.path
 import threading
 from pynput import mouse
 import pickle
+import time
 
 
 class Handler(object):
@@ -17,7 +18,7 @@ class Handler(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.window = QtWidgets.QLabel()
-        self.window.showMaximized()
+        self.window.showFullScreen()
         self.window.show()
 
     def run(self):
@@ -65,7 +66,9 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("right released"), (self.ip_dst, self.port_dst))
 
     def on_move(self, x, y):
-        self.socket.sendto(pickle.dumps(str((x, y))), (self.ip_dst, self.port_dst))
+        cords = (x, y)
+        self.socket.sendto(cords, (self.ip_dst, self.port_dst))
+        time.sleep(0.09)
 
     def on_scroll(self):
         pass

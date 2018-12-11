@@ -2,8 +2,8 @@
 import socket
 from PIL import ImageGrab, Image
 import threading
-from pynput.mouse import Button, Controller
 import pickle
+import pyautogui
 
 
 class Customer(object):
@@ -38,17 +38,18 @@ class Customer(object):
 
     def event_filter(self):
         while self.main_con:
-            data = pickle.dumps(self.socket.recv(1024))
-            if "right" in data and "pressed":
-                Controller().press(Button.right)
-            elif "right" in data and "released":
-                Controller().release(Button.right)
-            elif "left" in data and "pressed":
-                Controller().press(Button.left)
-            elif "left" in data and "released":
-                Controller().release(Button.left)
+            data = pickle.loads(self.socket.recv(1024))
+            if "right" in data and "pressed" in data:
+                pyautogui.mouseDown(button='right')
+            elif "right" in data and "released" in data:
+                pyautogui.mouseUp(button='right')
+            elif "left" in data and "pressed" in data:
+                pyautogui.mouseDown(button='left')
+            elif "left" in data and "released" in data:
+                pyautogui.mouseUp(button='left')
             else:
-                Controller().move(int(data[0]), int(data[1]))
+                pyautogui.moveTo(data)
+
 
     def set_connection_status(self, con):
         self.main_con = con
@@ -56,5 +57,3 @@ class Customer(object):
     def close_connection(self):
         self.main_con = False
         self.socket.close()
-
-# TODO: Convert all pyautogui related lines to pynput
