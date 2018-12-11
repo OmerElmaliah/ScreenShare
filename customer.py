@@ -1,8 +1,8 @@
 """Customer Class - Sends current screen image"""
 import socket
 from PIL import ImageGrab, Image
-import pyautogui
-import pickle
+import threading
+from pynput.mouse import Button, Controller
 
 
 class Customer(object):
@@ -14,13 +14,12 @@ class Customer(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
-        pyautogui.FAILSAFE = False
         # TODO: Add an exit button with exit_button_ui.py
 
     def run(self):
-        while self.main_con:
-            self.start_work()
-            self.recv_mouse_click()
+        work_thread = threading.Thread(target=self.start_work)
+        work_thread.start()
+        self.event_filter()
 
     def start_work(self):
         img = ImageGrab.grab()
@@ -35,12 +34,20 @@ class Customer(object):
             self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
             screen_image.close()
 
-    def recv_mouse_click(self):
-        mouse_click = pickle.loads(self.socket.recv(1024))
-        mouse_loc = pickle.loads(self.socket.recv(1024))
-        if ("left" in mouse_click) or ("right" in mouse_click):
-            pyautogui.click(button=mouse_click)
-        pyautogui.moveTo(mouse_loc)
+    def event_filter(self):
+        while self.main_con:
+            data = self.socket.recv(1024).decode('utf-8')
+            if "right" in data and "pressed":
+                Controller().press(Button.right)
+            elif "right" in data and "released":
+                Controller().release(Button.right)
+            elif "left" in data and "pressed":
+                Controller().press(Button.left)
+            elif "left" in data and "released":
+                Controller().release(Button.left)
+            elif "cords" in data:
+                Controller().move(data[data.find('X') + 1: data.find('X') + 4],
+                                  data[data.find('Y') + 1: data.find('Y') + 4])
 
     def set_connection_status(self, con):
         self.main_con = con
