@@ -22,17 +22,18 @@ class Customer(object):
         self.event_filter()
 
     def start_work(self):
-        img = ImageGrab.grab()
-        img.thumbnail((1080, 720), Image.ANTIALIAS)
-        img.save('img.png')
+        while True:
+            img = ImageGrab.grab()
+            img.thumbnail((1080, 720), Image.ANTIALIAS)
+            img.save('img.png')
 
-        with open('img.png', 'rb') as screen_image:
-            img_data = screen_image.read(8192)
-            while img_data:
-                self.socket.sendto(img_data, (self.ip_dst, self.port_dst))
+            with open('img.png', 'rb') as screen_image:
                 img_data = screen_image.read(8192)
-            self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
-            screen_image.close()
+                while img_data:
+                    self.socket.sendto(img_data, (self.ip_dst, self.port_dst))
+                    img_data = screen_image.read(8192)
+                self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
+                screen_image.close()
 
     def event_filter(self):
         while self.main_con:
@@ -46,8 +47,8 @@ class Customer(object):
             elif "left" in data and "released":
                 Controller().release(Button.left)
             elif "cords" in data:
-                Controller().move(data[data.find('X') + 1: data.find('X') + 4],
-                                  data[data.find('Y') + 1: data.find('Y') + 4])
+                Controller().move(int(data[data.find('X') + 1: data.find('X') + 4]),
+                                  int(data[data.find('Y') + 1: data.find('Y') + 4]))
 
     def set_connection_status(self, con):
         self.main_con = con

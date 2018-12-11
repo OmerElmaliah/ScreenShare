@@ -5,7 +5,6 @@ from PyQt5 import QtWidgets
 import os.path
 import threading
 from pynput import mouse
-import event_package.event_handler as Event
 
 
 class Handler(object):
@@ -16,9 +15,6 @@ class Handler(object):
         self.port_dst = port_dst
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
-
-        Event.setup(self.socket, self.ip_dst, self.port_dst)
-
         self.window = QtWidgets.QLabel()
         self.window.showMaximized()
         self.window.show()
@@ -52,10 +48,26 @@ class Handler(object):
 
     def event_listener(self):
         with mouse.Listener(
-                on_move=Event.on_move,
-                on_click=Event.on_click,
-                on_scroll=Event.on_scroll) as listener:
+                on_move=self.on_move,
+                on_click=self.on_click,
+                on_scroll=self.on_scroll) as listener:
             listener.join()
+
+    def on_click(self, x, y, button, pressed):
+        if button == mouse.Button.left and pressed:
+            self.socket.sendto("left pressed".encode('utf-8'), (self.ip_dst, self.port_dst))
+        elif button == mouse.Button.left:
+            self.socket.sendto("left released".encode('utf-8'), (self.ip_dst, self.port_dst))
+        elif button == mouse.Button.right and pressed:
+            self.socket.sendto("right pressed".encode('utf-8'), (self.ip_dst, self.port_dst))
+        else:
+            self.socket.sendto("right released".encode('utf-8'), (self.ip_dst, self.port_dst))
+
+    def on_move(self, x, y):
+        self.socket.sendto(("cords: X" + str(x) + " Y" + str(y)).encode('utf-8'), (self.ip_dst, self.port_dst))
+
+    def on_scroll(self):
+        pass
 
     def close_connection(self):
         self.socket.close()
