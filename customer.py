@@ -3,6 +3,7 @@ import socket
 from PIL import ImageGrab, Image
 import threading
 from pynput.mouse import Button, Controller
+import pickle
 
 
 class Customer(object):
@@ -37,7 +38,7 @@ class Customer(object):
 
     def event_filter(self):
         while self.main_con:
-            data = self.socket.recv(1024).decode('utf-8')
+            data = pickle.dumps(self.socket.recv(1024))
             if "right" in data and "pressed":
                 Controller().press(Button.right)
             elif "right" in data and "released":
@@ -46,9 +47,8 @@ class Customer(object):
                 Controller().press(Button.left)
             elif "left" in data and "released":
                 Controller().release(Button.left)
-            elif "cords" in data:
-                Controller().move(int(data[data.find('X') + 1: data.find('X') + 4]),
-                                  int(data[data.find('Y') + 1: data.find('Y') + 4]))
+            else:
+                Controller().move(int(data[0]), int(data[1]))
 
     def set_connection_status(self, con):
         self.main_con = con
