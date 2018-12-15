@@ -6,11 +6,11 @@ import os.path
 import threading
 from pynput import mouse, keyboard
 import pickle
-import time
 
 
 class Handler(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst):
+        self.num = 0
         self.ip_src = ip_src
         self.port_src = port_src
         self.ip_dst = ip_dst
@@ -75,8 +75,11 @@ class Handler(object):
 
     def on_move(self, x, y):
         cords = (x, y)
-        self.socket.sendto(pickle.dumps(cords), (self.ip_dst, self.port_dst))
-        time.sleep(0.09)
+        if self.num == 20:
+            self.socket.sendto(pickle.dumps(cords), (self.ip_dst, self.port_dst))
+            self.num = 0
+        else:
+            self.num += 1
 
     def on_scroll(self, x, y, dx, dy):
         if dy == 1:
