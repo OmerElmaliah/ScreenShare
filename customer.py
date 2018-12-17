@@ -15,6 +15,7 @@ class Customer(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
+        pyautogui.FAILSAFE = False
         # TODO: Add an exit button with exit_button_ui.py
 
     def run(self):
@@ -48,15 +49,23 @@ class Customer(object):
             elif "left" in data and "released" in data:
                 pyautogui.mouseUp(button='left')
             elif "up" in data:
-                pyautogui.scroll(10)
+                pyautogui.scroll(50)
             elif "down" in data:
-                pyautogui.scroll(-10)
+                pyautogui.scroll(-50)
             elif "rig2" in data:
-                pyautogui.hscroll(10)
+                pyautogui.hscroll(50)
             elif "lef2" in data:
-                pyautogui.hscroll(-10)
-            else:
-                pyautogui.moveTo(data)
+                pyautogui.hscroll(-50)
+            elif "press:" in data:
+                if 'key' in data:
+                    pyautogui.keyDown(data[data.find('key.') + 1:])
+                else:
+                    pyautogui.keyDown(data[1])
+            elif "release:" in data:
+                if 'key' in data:
+                    pyautogui.keyUp(data[data.find('key.') + 1:])
+                else:
+                    pyautogui.keyUp(data[1])
 
     def set_connection_status(self, con):
         self.main_con = con

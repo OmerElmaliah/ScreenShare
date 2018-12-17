@@ -75,7 +75,7 @@ class Handler(object):
 
     def on_move(self, x, y):
         cords = (x, y)
-        if self.num == 20:
+        if self.num == 10:
             self.socket.sendto(pickle.dumps(cords), (self.ip_dst, self.port_dst))
             self.num = 0
         else:
@@ -92,10 +92,10 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("lef2"), (self.ip_dst, self.port_dst))
 
     def on_press(self, key):
-        print(key)
+        self.socket.sendto(pickle.dumps("press: " + key), (self.ip_dst, self.port_dst))
 
     def on_release(self, key):
-        print(key)
+        self.socket.sendto(pickle.dumps("release: " + key), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
         self.socket.close()
