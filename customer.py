@@ -49,13 +49,13 @@ class Customer(object):
             elif "left" in data and "released" in data:
                 pyautogui.mouseUp(button='left')
             elif "up" in data:
-                pyautogui.scroll(50)
+                pyautogui.scroll(175)
             elif "down" in data:
-                pyautogui.scroll(-50)
+                pyautogui.scroll(-175)
             elif "rig2" in data:
-                pyautogui.hscroll(50)
+                pyautogui.hscroll(175)
             elif "lef2" in data:
-                pyautogui.hscroll(-50)
+                pyautogui.hscroll(-175)
             elif "press:" in data:
                 if 'Key' in data:
                     pyautogui.keyDown(data[data.find('.') + 1:])
