@@ -10,7 +10,30 @@ import pickle
 
 class Handler(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst):
+        self.comb = {'1': '!',
+                     '2': '@',
+                     '3': '#',
+                     '4': '$',
+                     '5': '%',
+                     '6': '^',
+                     '7': '&',
+                     '8': '*',
+                     '9': '(',
+                     '0': ')',
+                     '-': '_',
+                     '=': '+',
+                     '`': '~',
+                     '\\': '|',
+                     '[': '{',
+                     ']': '}',
+                     ';': ':',
+                     "'": '"',
+                     ',': '<',
+                     '.': '>',
+                     '/': '?'}
         self.num = 0
+        self.alt = False
+        self.shift = False
         self.ip_src = ip_src
         self.port_src = port_src
         self.ip_dst = ip_dst
@@ -92,10 +115,19 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("lef2"), (self.ip_dst, self.port_dst))
 
     def on_press(self, key):
-        self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
+        if 'shift' in str(key) and (not self.shift):
+            self.shift = True
+        elif self.shift and ('Key' not in str(key)):
+            key = self.comb[str(key)[1]]
+            self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
+        else:
+            self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
 
     def on_release(self, key):
-        self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
+        if 'shift' in str(key) and self.shift:
+            self.shift = False
+        else:
+            self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
         self.socket.close()
