@@ -57,15 +57,17 @@ class Customer(object):
             elif "lef2" in data:
                 pyautogui.hscroll(-50)
             elif "press:" in data:
-                if 'key' in data:
-                    pyautogui.keyDown(data[data.find('key.') + 1:])
+                if 'Key' in data:
+                    pyautogui.keyDown(data[data.find('.') + 1:])
                 else:
-                    pyautogui.keyDown(data[1])
+                    pyautogui.keyDown(data[data.find(':') + 3])
             elif "release:" in data:
-                if 'key' in data:
-                    pyautogui.keyUp(data[data.find('key.') + 1:])
+                if 'Key' in data:
+                    pyautogui.keyUp(data[data.find('.') + 1:])
                 else:
-                    pyautogui.keyUp(data[1])
+                    pyautogui.keyUp(data[data.find(':') + 3])
+            else:
+                pyautogui.moveTo(data)
 
     def set_connection_status(self, con):
         self.main_con = con

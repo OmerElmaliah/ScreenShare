@@ -60,8 +60,8 @@ class Handler(object):
 
         listener_mouse.start()
         listener_keyboard.start()
-        listener_mouse.join()
         listener_keyboard.join()
+        listener_mouse.join()
 
     def on_click(self, x, y, button, pressed):
         if button == mouse.Button.left and pressed:
@@ -92,12 +92,10 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("lef2"), (self.ip_dst, self.port_dst))
 
     def on_press(self, key):
-        self.socket.sendto(pickle.dumps("press: " + key), (self.ip_dst, self.port_dst))
+        self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
 
     def on_release(self, key):
-        self.socket.sendto(pickle.dumps("release: " + key), (self.ip_dst, self.port_dst))
+        self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
         self.socket.close()
-
-# TODO: Convert all win32api related lines to pynput
