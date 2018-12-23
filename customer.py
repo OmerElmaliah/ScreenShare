@@ -4,6 +4,7 @@ from PIL import ImageGrab, Image
 import threading
 import pickle
 import pyautogui
+import win32api
 
 
 class Customer(object):
@@ -42,12 +43,16 @@ class Customer(object):
             data = pickle.loads(self.socket.recv(1024))
             if "right" in data and "pressed" in data:
                 pyautogui.mouseDown(button='right')
+
             elif "right" in data and "released" in data:
                 pyautogui.mouseUp(button='right')
+
             elif "left" in data and "pressed" in data:
                 pyautogui.mouseDown(button='left')
+
             elif "left" in data and "released" in data:
                 pyautogui.mouseUp(button='left')
+
             elif "up" in data:
                 pyautogui.scroll(175)
             elif "down" in data:
@@ -58,7 +63,10 @@ class Customer(object):
                 pyautogui.hscroll(-175)
             elif "press:" in data:
                 if 'Key' in data:
-                    pyautogui.keyDown(data[data.find('.') + 1:])
+                    if 'lang' in data:
+                        win32api.LoadKeyboardLayout('00000409', 1)
+                    else:
+                        pyautogui.keyDown(data[data.find('.') + 1:])
                 else:
                     pyautogui.keyDown(data[data.find(':') + 3])
             elif "release:" in data:

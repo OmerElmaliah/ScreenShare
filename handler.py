@@ -117,23 +117,31 @@ class Handler(object):
     def on_press(self, key):
         if 'shift' in str(key) and (not self.shift):
             self.shift = True
+
         elif self.shift and ('Key' not in str(key)) and (str(key)[1] in self.comb):
             key = self.comb[str(key)[1]]
             self.socket.sendto(pickle.dumps("press: '" + str(key) + "'"), (self.ip_dst, self.port_dst))
+
         elif self.cap_shift and ('Key' not in str(key)):
             key = str(key)[1].upper()
             self.socket.sendto(pickle.dumps("press: '" + str(key) + "'"), (self.ip_dst, self.port_dst))
+
+        elif self.shift and ('alt' in str(key)):
+            self.socket.sendto(pickle.dumps("press: lang"), (self.ip_dst, self.port_dst))
+
         elif 'shift' not in str(key):
             self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
 
     def on_release(self, key):
         if 'caps_lock' in str(key) and (not self.cap_shift):
             self.cap_shift = True
+
         elif 'caps_lock' in str(key) and self.cap_shift:
             self.cap_shift = False
 
         if 'shift' in str(key) and self.shift:
             self.shift = False
+
         elif 'shift' not in str(key):
             self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
 
