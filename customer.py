@@ -63,15 +63,15 @@ class Customer(object):
                 pyautogui.hscroll(-175)
             elif "press:" in data:
                 if 'Key' in data:
-                    if 'lang' in data:
-                        win32api.LoadKeyboardLayout('00000409', 1)
-                    else:
-                        pyautogui.keyDown(data[data.find('.') + 1:])
+                    pyautogui.keyDown(data[data.find('.') + 1:])
                 else:
                     pyautogui.keyDown(data[data.find(':') + 3])
             elif "release:" in data:
                 if 'Key' in data:
-                    pyautogui.keyUp(data[data.find('.') + 1:])
+                    if 'lang' in data:
+                        win32api.LoadKeyboardLayout('00000409', 1)
+                    else:
+                        pyautogui.keyUp(data[data.find('.') + 1:])
                 else:
                     pyautogui.keyUp(data[data.find(':') + 3])
             else:
