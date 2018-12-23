@@ -137,8 +137,6 @@ class Handler(object):
 
         if 'shift' in str(key) and self.shift:
             self.shift = False
-        elif self.shift and ('alt' in str(key)):
-            self.socket.sendto(pickle.dumps("lang"), (self.ip_dst, self.port_dst))
         elif 'shift' not in str(key):
             self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
 

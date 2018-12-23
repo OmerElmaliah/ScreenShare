@@ -4,7 +4,6 @@ from PIL import ImageGrab, Image
 import threading
 import pickle
 import pyautogui
-import win32api
 
 
 class Customer(object):
@@ -61,8 +60,6 @@ class Customer(object):
                 pyautogui.hscroll(175)
             elif "lef2" in data:
                 pyautogui.hscroll(-175)
-            elif "lang" in data:
-                win32api.LoadKeyboardLayout('00000409', 1)
             elif "press:" in data:
                 if 'Key' in data:
                     pyautogui.keyDown(data[data.find('.') + 1:])
