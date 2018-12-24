@@ -4,6 +4,7 @@ from PIL import ImageGrab, Image
 import threading
 import pickle
 import pyautogui
+from unidecode import unidecode
 
 
 class Customer(object):
@@ -39,7 +40,7 @@ class Customer(object):
 
     def event_filter(self):
         while self.main_con:
-            data = pickle.loads(self.socket.recv(1024))
+            data = unidecode(pickle.loads(self.socket.recv(1024)))
             if "right" in data and "pressed" in data:
                 pyautogui.mouseDown(button='right')
 
