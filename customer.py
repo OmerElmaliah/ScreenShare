@@ -1,10 +1,10 @@
 """Customer Class - Sends current screen image"""
 import socket
-from PIL import ImageGrab, Image
+from PIL import Image
 import threading
 import pickle
 import pyautogui
-from unidecode import unidecode
+from mss import mss
 
 
 class Customer(object):
@@ -26,9 +26,7 @@ class Customer(object):
 
     def start_work(self):
         while True:
-            img = ImageGrab.grab()
-            img.thumbnail((1080, 720), Image.ANTIALIAS)
-            img.save('img.png')
+            mss().shot(output="img.png")
 
             with open('img.png', 'rb') as screen_image:
                 img_data = screen_image.read(8192)
@@ -40,7 +38,7 @@ class Customer(object):
 
     def event_filter(self):
         while self.main_con:
-            data = unidecode(pickle.loads(self.socket.recv(1024)))
+            data = pickle.loads(self.socket.recv(1024))
             if "right" in data and "pressed" in data:
                 pyautogui.mouseDown(button='right')
 
