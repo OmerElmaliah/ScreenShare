@@ -1,6 +1,6 @@
 """Customer Class - Sends current screen image"""
 import socket
-from PIL import Image
+import cv2
 import threading
 import pickle
 import pyautogui
@@ -27,6 +27,9 @@ class Customer(object):
     def start_work(self):
         while True:
             mss().shot(output="img.png")
+            img = cv2.imread("img.png")
+            img_resized = cv2.resize(img, (1080, 720))
+            cv2.imwrite("img.png", img_resized)
 
             with open('img.png', 'rb') as screen_image:
                 img_data = screen_image.read(8192)
