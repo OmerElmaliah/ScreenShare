@@ -10,7 +10,6 @@ REQUIRES THE FOLLOWING MODULES:
 - pynput
 - pickle
 - pyautogui
-- PIL
-
+- mss
 
 CURRENTLY A WORK IN PROGRESS.
