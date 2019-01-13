@@ -1,22 +1,30 @@
 """Main Class - Initiates Components"""
 from PyQt5 import QtWidgets
-from App.main_window import MainWindow
+from App.login_window import LoginWindow
 import sys
 import multiprocessing
 
+LOGIN_CONDITION = False
 
-"""Initiates the app"""
-def setup_main():
+
+def setup_login():
+    global LOGIN_CONDITION
+    """Initiates the login page"""
     app = QtWidgets.QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
+    login_window = LoginWindow()
+    login_window.show()
     app.exec_()
+    LOGIN_CONDITION = login_window.logged_in
 
 
 def main():
-    main_process = multiprocessing.Process(target=setup_main)
-    main_process.start()
-    main_process.join()
+    login_process = multiprocessing.Process(target=setup_login)
+    login_process.start()
+    login_process.join()
+
+    # fix this
+    if LOGIN_CONDITION:
+        print(1)
 
 
 if __name__ == '__main__':
