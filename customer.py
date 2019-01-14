@@ -9,12 +9,11 @@ from mss import mss
 
 class Customer(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst):
+        # TODO: Super class and sockets
         self.ip_src = ip_src
         self.port_src = port_src
         self.ip_dst = ip_dst
         self.port_dst = port_dst
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
         pyautogui.FAILSAFE = False
         # TODO: Add an exit button with exit_button_ui.py

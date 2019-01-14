@@ -6,6 +6,7 @@ class LoginWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
         self.login_button.clicked.connect(self.login)
+        # TODO: Add signup button
         self.logged_in = False
 
     def login(self):

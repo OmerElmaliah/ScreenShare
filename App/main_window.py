@@ -1,10 +1,33 @@
 from PyQt5 import QtCore, QtWidgets
+from customer import Customer
+from handler import Handler
+import socket
+
+
+IP = "192.168.1.174"
+PORT = 8882
 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
+        self.send_request_button.clicked.connect(self.send_request)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((IP, PORT))
+
+    def send_request(self):
+        iden = self.id_customer_text.toPlainText()
+        pass_iden = int(self.id_customer_pass_text.toPlainText())
+
+        # TODO: Send request to client
+
+    def failed_request(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText("Could not connect to client")
+        msg.setWindowTitle("Error")
+        msg.exec_()
 
     def setup_ui(self, main_window):
         main_window.setObjectName("main_window")
