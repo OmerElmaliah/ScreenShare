@@ -1,10 +1,11 @@
 from PyQt5 import QtCore, QtWidgets
 from customer import Customer
 from handler import Handler
+import threading
 import socket
 
 
-IP = "192.168.1.174"
+IP = "127.0.0.1"
 PORT = 8882
 
 
@@ -14,13 +15,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_ui(self)
         self.send_request_button.clicked.connect(self.send_request)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # TODO: Add listen button
         self.socket.bind((IP, PORT))
 
     def send_request(self):
         iden = self.id_customer_text.toPlainText()
         pass_iden = int(self.id_customer_pass_text.toPlainText())
 
-        # TODO: Send request to client
+        self.socket.sendto("Connect", (iden, pass_iden))
+        ans = self.socket.recv(8192)
+        if ans == "y":
+            self.socket.sendto("Connecting", (iden, pass_iden))
+            # TODO: Continue yes answer
+        elif ans == 'n':
+            # TODO: No answer
+            pass
+
+        # self.close()
+        # handler = Customer(IP, PORT, iden, pass_iden)
+        # handler_thread = threading.Thread(target=handler.run)
+        # handler_thread.start()
+        # handler_thread.join()
+
+    def listen_for_requests(self):
+        # TODO: Do listen command
+        pass
 
     def failed_request(self):
         msg = QtWidgets.QMessageBox()

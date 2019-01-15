@@ -1,20 +1,21 @@
 """Customer Class - Sends current screen image"""
-import socket
 import cv2
 import threading
 import pickle
 import pyautogui
 from mss import mss
+import socket
 
 
 class Customer(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst):
-        # TODO: Super class and sockets
         self.ip_src = ip_src
         self.port_src = port_src
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.main_con = True
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((ip_src, port_src))
         pyautogui.FAILSAFE = False
         # TODO: Add an exit button with exit_button_ui.py
 
@@ -80,3 +81,4 @@ class Customer(object):
     def close_connection(self):
         self.main_con = False
         self.socket.close()
+

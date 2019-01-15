@@ -33,9 +33,9 @@ def main():
     login_thread.join()
 
     if LOGIN_CONDITION:
-        login_process = multiprocessing.Process(target=setup_main)
-        login_process.start()
-        login_process.join()
+        login_main = multiprocessing.Process(target=setup_main)
+        login_main.start()
+        login_main.join()
 
 
 if __name__ == '__main__':
