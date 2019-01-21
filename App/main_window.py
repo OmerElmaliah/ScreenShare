@@ -5,7 +5,7 @@ import threading
 import socket
 
 
-IP = "127.0.0.1"
+IP = "192.168.1.174"
 PORT = 8882
 
 
@@ -14,8 +14,8 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
         self.send_request_button.clicked.connect(self.send_request)
+        self.listen_button.clicked.connect(self.listen_for_requests)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # TODO: Add listen button
         self.socket.bind((IP, PORT))
 
     def send_request(self):
@@ -26,20 +26,38 @@ class MainWindow(QtWidgets.QMainWindow):
         ans = self.socket.recv(8192)
         if ans == "y":
             self.socket.sendto("Connecting", (iden, pass_iden))
-            # TODO: Continue yes answer
+            self.close()
+            self.socket.close()
+            handler = Handler(IP, PORT, iden, pass_iden)
+            handler_thread = threading.Thread(target=handler.run)
+            handler_thread.start()
+            handler_thread.join()
         elif ans == 'n':
-            # TODO: No answer
-            pass
-
-        # self.close()
-        # handler = Customer(IP, PORT, iden, pass_iden)
-        # handler_thread = threading.Thread(target=handler.run)
-        # handler_thread.start()
-        # handler_thread.join()
+            self.access_denied()
 
     def listen_for_requests(self):
-        # TODO: Do listen command
-        pass
+        print(1)
+        ans_1 = self.socket.recv(1024) # check this
+        print(1)
+        iden = ans_1[:ans_1.find("PASS:")]
+        pass_iden = ans_1[ans_1.find("PASS:") + 5:]
+        ans_2 = self.get_text()
+        self.socket.sendto(ans_2, (iden, pass_iden))
+
+        ans_3 = self.socket.recv(1024)
+        if ans_3 is "Connecting":
+            self.close()
+            self.socket.close()
+            customer = Customer(IP, PORT, iden, pass_iden)
+            customer_thread = threading.Thread(target=customer.run)
+            customer_thread.start()
+            customer_thread.join()
+
+    def get_text(self):
+        text, ok_pressed = QtWidgets.QInputDialog.getText(self, "Connection Request", "YES or NO:",
+                                                          QtWidgets.QLineEdit.Normal, "")
+        if ok_pressed and text != '':
+            return text
 
     def failed_request(self):
         msg = QtWidgets.QMessageBox()
@@ -48,9 +66,17 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.setWindowTitle("Error")
         msg.exec_()
 
+    def access_denied(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText("Access was denied by the client")
+        msg.setWindowTitle("test-1")
+        msg.exec_()
+
     def setup_ui(self, main_window):
         main_window.setObjectName("main_window")
         main_window.resize(800, 600)
+
         self.central_widget = QtWidgets.QWidget(main_window)
         self.central_widget.setObjectName("central_widget")
 
@@ -91,8 +117,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.id_customer_pass_text.setObjectName("id_customer_pass_text")
 
         self.send_request_button = QtWidgets.QPushButton(self.central_widget)
-        self.send_request_button.setGeometry(QtCore.QRect(310, 470, 181, 71))
+        self.send_request_button.setGeometry(QtCore.QRect(160, 470, 181, 71))
         self.send_request_button.setObjectName("send_request_button")
+
+        self.listen_button = QtWidgets.QPushButton(self.central_widget)
+        self.listen_button.setGeometry(QtCore.QRect(450, 470, 181, 71))
+        self.listen_button.setObjectName("listen_button")
 
         main_window.setCentralWidget(self.central_widget)
 
@@ -133,3 +163,4 @@ class MainWindow(QtWidgets.QMainWindow):
                                              "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
                                              "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; color:#2b6bff;\">Personal Password Identifier:</span></p></body></html>"))
         self.send_request_button.setText(_translate("main_window", "Send Request"))
+        self.listen_button.setText(_translate("main_window", "Listen For Requests"))

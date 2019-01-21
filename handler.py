@@ -10,7 +10,6 @@ import socket
 
 class Handler(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst):
-        # TODO: Super class and sockets
         self.comb = {'1': '!',
                      '2': '@',
                      '3': '#',
