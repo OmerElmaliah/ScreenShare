@@ -20,7 +20,7 @@ def setup_login():
 
 
 def setup_main():
-    """Initiates the main page"""
+    """Initiates the app"""
     app = QtWidgets.QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
@@ -33,9 +33,9 @@ def main():
     login_thread.join()
 
     if LOGIN_CONDITION:
-        login_main = multiprocessing.Process(target=setup_main)
-        login_main.start()
-        login_main.join()
+        main_process = multiprocessing.Process(target=setup_main)
+        main_process.start()
+        main_process.join()
 
 
 if __name__ == '__main__':
