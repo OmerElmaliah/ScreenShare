@@ -40,6 +40,10 @@ class Handler(object):
         self.port_dst = port_dst
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((ip_src, port_src))
+
+        self.socket.sendto(ip_src.encode('utf-8'), (ip_dst, port_dst))
+        self.socket.sendto(str(port_dst).encode('utf-8'), (ip_dst, port_dst))
+
         self.window = QtWidgets.QLabel()
         self.window.showFullScreen()
         self.window.show()

@@ -8,14 +8,16 @@ import socket
 
 
 class Customer(object):
-    def __init__(self, ip_src, port_src, ip_dst, port_dst):
+    def __init__(self, ip_src, port_src):
         self.ip_src = ip_src
         self.port_src = port_src
-        self.ip_dst = ip_dst
-        self.port_dst = port_dst
         self.main_con = True
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((ip_src, port_src))
+
+        self.ip_dst = self.socket.recv(1024).decode('utf-8')
+        self.port_dst = int(self.socket.recv(1024).decode('utf-8'))
+
         pyautogui.FAILSAFE = False
         # TODO: Add an exit button with exit_button_ui.py
 

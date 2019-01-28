@@ -14,31 +14,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_ui(self)
         self.send_request_button.clicked.connect(self.send_request)
         self.listen_button.clicked.connect(self.listen_for_requests)
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.bind((self.ip, self.port))
-        self.con = True
 
     def listen_for_requests(self):
         thread = threading.Thread(target=self.A1)
-        thread.daemon = True
         thread.start()
 
     def A1(self):
         """Creates a variable type Customer and starts working"""
-        iden = self.socket.recv(1024).decode('utf-8')
-        pass_iden = int(self.socket.recv(1024).decode('utf-8'))
-
-        customer = Customer(self.ip, self.port + 1, iden, pass_iden)
+        customer = Customer(self.ip, self.port)
         customer_thread = threading.Thread(target=customer.run)
         customer_thread.daemon = True
         customer_thread.start()
 
     def send_request(self):
+        thread = threading.Thread(target=self.A2)
+        thread.start()
+
+    def A2(self):
         """Creates a variable type Handler and starts working"""
         iden = self.id_customer_text.toPlainText()
         pass_iden = int(self.id_customer_pass_text.toPlainText())
 
-        handler = Handler(self.ip, self.port + 1, iden, pass_iden)
+        handler = Handler(self.ip, self.port, iden, pass_iden)
         handler_thread = threading.Thread(target=handler.run)
         handler_thread.daemon = True
         handler_thread.start()
