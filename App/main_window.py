@@ -12,18 +12,19 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
-        self.send_request_button.clicked.connect(self.send_request_thread)
-        self.send_request_button.clicked.connect(self.listen_for_requests_thread)
+        self.send_request_button.clicked.connect(self.send_request)
+        self.listen_button.clicked.connect(self.listen_for_requests)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip, self.port))
-
-    def listen_for_requests_thread(self):
-        listen_thread = threading.Thread(target=self.listen_for_requests)
-        listen_thread.daemon = True
-        listen_thread.start()
+        self.con = True
 
     def listen_for_requests(self):
-        """Listens for requests from other users"""
+        thread = threading.Thread(target=self.A1)
+        thread.daemon = True
+        thread.start()
+
+    def A1(self):
+        """Creates a variable type Customer and starts working"""
         iden = self.socket.recv(1024).decode('utf-8')
         pass_iden = int(self.socket.recv(1024).decode('utf-8'))
 
@@ -32,18 +33,10 @@ class MainWindow(QtWidgets.QMainWindow):
         customer_thread.daemon = True
         customer_thread.start()
 
-    def send_request_thread(self):
-        request_thread = threading.Thread(target=self.send_request)
-        request_thread.daemon = True
-        request_thread.start()
-
     def send_request(self):
-        """Sends a request to another user"""
+        """Creates a variable type Handler and starts working"""
         iden = self.id_customer_text.toPlainText()
         pass_iden = int(self.id_customer_pass_text.toPlainText())
-
-        self.socket.sendto(self.ip.encode('utf-8'), (iden, pass_iden))
-        self.socket.sendto(str(self.port).encode('utf-8'), (iden, pass_iden))
 
         handler = Handler(self.ip, self.port + 1, iden, pass_iden)
         handler_thread = threading.Thread(target=handler.run)
