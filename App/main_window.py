@@ -6,30 +6,27 @@ import threading
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '127.0.0.1'
+    ip = '192.168.1.174'
     port = 8885
 
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
         self.send_request_button.clicked.connect(self.send_request_thread)
+        self.send_request_button.clicked.connect(self.listen_for_requests_thread)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip, self.port))
-        self.con = False
 
+    def listen_for_requests_thread(self):
         listen_thread = threading.Thread(target=self.listen_for_requests)
         listen_thread.daemon = True
         listen_thread.start()
 
     def listen_for_requests(self):
         """Listens for requests from other users"""
-        apt = False
-        while not apt:
-            iden = self.socket.recv(1024).decode('utf-8')
-            pass_iden = int(self.socket.recv(1024).decode('utf-8'))
-            apt = self.request_pop()
+        iden = self.socket.recv(1024).decode('utf-8')
+        pass_iden = int(self.socket.recv(1024).decode('utf-8'))
 
-        self.con = True
         customer = Customer(self.ip, self.port + 1, iden, pass_iden)
         customer_thread = threading.Thread(target=customer.run)
         customer_thread.daemon = True
@@ -42,36 +39,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def send_request(self):
         """Sends a request to another user"""
-        self.con = False
         iden = self.id_customer_text.toPlainText()
         pass_iden = int(self.id_customer_pass_text.toPlainText())
 
         self.socket.sendto(self.ip.encode('utf-8'), (iden, pass_iden))
         self.socket.sendto(str(self.port).encode('utf-8'), (iden, pass_iden))
 
-        handler_thread = threading.Thread(target=self.handler_setup, args=(iden, pass_iden))
+        handler = Handler(self.ip, self.port + 1, iden, pass_iden)
+        handler_thread = threading.Thread(target=handler.run)
         handler_thread.daemon = True
         handler_thread.start()
-
-    def handler_setup(self, iden, pass_iden):
-        while True:
-            if self.con:
-                handler = Handler(self.ip, self.port + 1, iden, pass_iden)
-                handler_thread = threading.Thread(target=handler.run)
-                handler_thread.daemon = True
-                handler_thread.start()
-                self.close()
-                break
-
-    def request_pop(self):
-        msg = "A user is requesting to control your computer, Allow?"
-        reply = QtWidgets.QMessageBox.question(self, 'Message', msg,
-                                               QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
-
-        if reply == QtWidgets.QMessageBox.Yes:
-            return True
-        else:
-            return False
+        self.close()
 
     def setup_ui(self, main_window):
         main_window.setObjectName("main_window")
