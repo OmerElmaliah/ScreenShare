@@ -6,7 +6,7 @@ import threading
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '127.0.0.1'
+    ip = '10.0.0.2'
     port = 8885
 
     def __init__(self):
@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         while not apt:
             iden = self.socket.recv(1024).decode('utf-8')
             pass_iden = int(self.socket.recv(1024).decode('utf-8'))
-            apt = self.request_pop()
+            # apt = self.request_pop()
 
         self.con = True
         customer = Customer(self.ip, self.port + 1, iden, pass_iden)
