@@ -1,11 +1,11 @@
 """Handler Class - Receives Images From Customer And Displays Them"""
+import socket
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtWidgets
 import os.path
 import threading
 from pynput import mouse, keyboard
 import pickle
-import socket
 
 
 class Handler(object):
@@ -39,7 +39,7 @@ class Handler(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.bind((ip_src, port_src))
+        self.socket.bind((self.ip_src, self.port_src))
         self.window = QtWidgets.QLabel()
         self.window.showFullScreen()
         self.window.show()
