@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore
 from customer import Customer
 from handler import Handler
 import threading
+import socket
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -11,12 +12,20 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
-        self.listen_button.clicked.connect(self.listen_for_requests)
         self.send_request_button.clicked.connect(self.send_request)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((self.ip, self.port))
+
+        listen_thread = threading.Thread(target=self.listen_for_requests)
+        listen_thread.daemon = True
+        listen_thread.start()
 
     def listen_for_requests(self):
         """Creates a variable type Customer and starts working"""
-        customer = Customer(self.ip, self.port + 1, '10.0.0.6', 8884)
+        iden = self.socket.recv(2048).decode('utf-8')
+        iden_port = int(self.socket.recv(2048).decode('utf-8')) + 1
+
+        customer = Customer(self.ip, self.port + 1, iden, iden_port)
         customer_thread = threading.Thread(target=customer.run)
         customer_thread.daemon = True
         customer_thread.start()
@@ -25,7 +34,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """Creates a variable type Handler and starts working"""
         iden = self.id_customer_text.toPlainText()
         pass_iden = int(self.id_customer_pass_text.toPlainText())
-        
+
+        self.socket.sendto(self.ip.encode('utf-8'), (iden, pass_iden))
+        self.socket.sendto(str(self.port).encode('utf-8'), (iden, pass_iden))
+
         handler = Handler(self.ip, self.port + 1, iden, pass_iden + 1)
         handler_thread = threading.Thread(target=handler.run)
         handler_thread.daemon = True
