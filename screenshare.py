@@ -7,8 +7,7 @@ import multiprocessing
 import threading
 
 
-LOGIN_CONDITION = True
-# Set to false
+LOGIN_CONDITION = False
 
 
 def setup_login():
@@ -30,9 +29,9 @@ def setup_main():
 
 
 def main():
-    # login_thread = threading.Thread(target=setup_login)
-    # login_thread.start()
-    # login_thread.join()
+    login_thread = threading.Thread(target=setup_login)
+    login_thread.start()
+    login_thread.join()
 
     if LOGIN_CONDITION:
         main_process = multiprocessing.Process(target=setup_main)

@@ -6,7 +6,7 @@ import socket
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '10.0.0.2'
+    ip = '192.168.1.174'
     port = 8883
 
     def __init__(self):
@@ -15,6 +15,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.send_request_button.clicked.connect(self.send_request)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip, self.port))
+        self.con = True
 
         listen_thread = threading.Thread(target=self.listen_for_requests)
         listen_thread.daemon = True
@@ -22,27 +23,45 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def listen_for_requests(self):
         """Creates a variable type Customer and starts working"""
-        iden = self.socket.recv(2048).decode('utf-8')
-        iden_port = int(self.socket.recv(2048).decode('utf-8')) + 1
+        while self.con:
+            try:
+                iden = self.socket.recv(2048).decode('utf-8')
+                iden_port = int(self.socket.recv(2048).decode('utf-8')) + 1
 
-        customer = Customer(self.ip, self.port + 1, iden, iden_port)
-        customer_thread = threading.Thread(target=customer.run)
-        customer_thread.daemon = True
-        customer_thread.start()
+                customer = Customer(self.ip, self.port + 1, iden, iden_port)
+                customer_thread = threading.Thread(target=customer.run)
+                customer_thread.daemon = True
+                customer_thread.start()
+                self.con = False
+            except ValueError:
+                pass
 
     def send_request(self):
         """Creates a variable type Handler and starts working"""
-        iden = self.id_customer_text.toPlainText()
-        pass_iden = int(self.id_customer_pass_text.toPlainText())
+        try:
+            iden = self.id_customer_text.toPlainText()
+            pass_iden = int(self.id_customer_pass_text.toPlainText())
 
-        self.socket.sendto(self.ip.encode('utf-8'), (iden, pass_iden))
-        self.socket.sendto(str(self.port).encode('utf-8'), (iden, pass_iden))
+            try:
+                self.socket.sendto(self.ip.encode('utf-8'), (iden, pass_iden))
+                self.socket.sendto(str(self.port).encode('utf-8'), (iden, pass_iden))
 
-        handler = Handler(self.ip, self.port + 1, iden, pass_iden + 1)
-        handler_thread = threading.Thread(target=handler.run)
-        handler_thread.daemon = True
-        handler_thread.start()
-        self.close()
+                handler = Handler(self.ip, self.port + 1, iden, pass_iden + 1)
+                handler_thread = threading.Thread(target=handler.run)
+                handler_thread.daemon = True
+                handler_thread.start()
+                self.close()
+            except ValueError:
+                self.fail_msg("Could Not Connect To Client")
+        except ValueError:
+            self.fail_msg("Invalid Input Given")
+
+    def fail_msg(self, text):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText(text)
+        msg.setWindowTitle("Error")
+        msg.exec_()
 
     def setup_ui(self, main_window):
         main_window.setObjectName("main_window")
@@ -88,12 +107,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.id_customer_pass_text.setObjectName("id_customer_pass_text")
 
         self.send_request_button = QtWidgets.QPushButton(self.central_widget)
-        self.send_request_button.setGeometry(QtCore.QRect(160, 470, 181, 71))
+        self.send_request_button.setGeometry(QtCore.QRect(310, 470, 181, 71))
         self.send_request_button.setObjectName("send_request_button")
-
-        self.listen_button = QtWidgets.QPushButton(self.central_widget)
-        self.listen_button.setGeometry(QtCore.QRect(450, 470, 181, 71))
-        self.listen_button.setObjectName("listen_button")
 
         main_window.setCentralWidget(self.central_widget)
 
@@ -134,4 +149,3 @@ class MainWindow(QtWidgets.QMainWindow):
                                              "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
                                              "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; color:#2b6bff;\">Personal Password Identifier:</span></p></body></html>"))
         self.send_request_button.setText(_translate("main_window", "Send Request"))
-        self.listen_button.setText(_translate("main_window", "Listen For Requests"))
