@@ -1,4 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
+from App.signup_window import SignUpWindow
+from DB.userbase import UserBase
 
 
 class LoginWindow(QtWidgets.QMainWindow):
@@ -6,17 +8,25 @@ class LoginWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
         self.login_button.clicked.connect(self.login)
-        # TODO: Add signup button
+        self.signup_button.clicked.connect(self.signup)
         self.logged_in = False
 
     def login(self):
         id_text = self.username_check.toPlainText()
         pass_text = self.password_check.toPlainText()
-        if id_text == "Admin" and pass_text == "Admin":
+
+        db = UserBase()
+        if db.verification(id_text, pass_text):
             self.logged_in = True
+            db.close()
             self.close()
         else:
+            db.close()
             self.failed_login()
+
+    def signup(self):
+        self.su = SignUpWindow()
+        self.su.show()
 
     def failed_login(self):
         msg = QtWidgets.QMessageBox()
