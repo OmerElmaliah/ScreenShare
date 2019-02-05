@@ -11,12 +11,11 @@ class SignUpWindow(QtWidgets.QMainWindow):
     def sign_up(self):
         try:
             user = self.username_edit.toPlainText()
-            psw = self.password_edit.toPlainText()
+            psw = self.password_edit.text()
             if user and psw:
                 db = UserBase()
                 if db.create_account(user, psw):
                     msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setText("User created, You may now login")
                     msg.setWindowTitle("Success")
                     msg.exec_()
@@ -51,9 +50,10 @@ class SignUpWindow(QtWidgets.QMainWindow):
         self.username_edit.setGeometry(QtCore.QRect(180, 140, 161, 31))
         self.username_edit.setObjectName("username_edit")
 
-        self.password_edit = QtWidgets.QTextEdit(signup_screen)
+        self.password_edit = QtWidgets.QLineEdit(signup_screen)
         self.password_edit.setGeometry(QtCore.QRect(180, 170, 161, 31))
         self.password_edit.setObjectName("password_edit")
+        self.password_edit.setEchoMode(QtWidgets.QLineEdit.Password)
 
         self.signup_button = QtWidgets.QPushButton(signup_screen)
         self.signup_button.setGeometry(QtCore.QRect(150, 230, 101, 31))

@@ -11,7 +11,7 @@ class UserBase(object):
         self.c.execute('SELECT * FROM userbase')
         data = self.c.fetchall()
         for row in data:
-            if row[0] == user and row[1] == psw:
+            if row[0] == user or row[1] == psw:
                 return False
 
         self.c.execute('INSERT INTO userbase (Username, Password) VALUES(?, ?)', (user, psw))

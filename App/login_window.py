@@ -13,7 +13,7 @@ class LoginWindow(QtWidgets.QMainWindow):
 
     def login(self):
         id_text = self.username_check.toPlainText()
-        pass_text = self.password_check.toPlainText()
+        pass_text = self.password_check.text()
 
         db = UserBase()
         if db.verification(id_text, pass_text):
@@ -53,9 +53,10 @@ class LoginWindow(QtWidgets.QMainWindow):
         self.username_text.setGeometry(QtCore.QRect(360, 200, 81, 31))
         self.username_text.setObjectName("username_text")
 
-        self.password_check = QtWidgets.QPlainTextEdit(self.central_widget)
+        self.password_check = QtWidgets.QLineEdit(self.central_widget)
         self.password_check.setGeometry(QtCore.QRect(310, 320, 181, 31))
         self.password_check.setObjectName("password_check")
+        self.password_check.setEchoMode(QtWidgets.QLineEdit.Password)
 
         self.password_text = QtWidgets.QTextBrowser(self.central_widget)
         self.password_text.setGeometry(QtCore.QRect(360, 280, 81, 31))
