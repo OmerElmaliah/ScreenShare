@@ -25,8 +25,8 @@ class SignUpWindow(QtWidgets.QMainWindow):
                     self.fail_msg("Username already taken!")
             else:
                 self.fail_msg("Please enter valid input")
-        except ValueError:
-            self.fail_msg("An error has occurred")
+        except:
+            self.fail_msg("Could not connect to server")
 
     def fail_msg(self, text):
         msg = QtWidgets.QMessageBox()

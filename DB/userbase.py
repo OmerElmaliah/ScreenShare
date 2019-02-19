@@ -1,30 +1,26 @@
-import sqlite3
+import rethinkdb as r
 
 
 class UserBase(object):
     def __init__(self):
-        self.conn = sqlite3.connect('screenshare.db')
-        self.c = self.conn.cursor()
-        self.c.execute('CREATE TABLE IF NOT EXISTS userbase(Username TEXT, Password TEXT)')
+        self.connection = r.connect(host='192.168.1.174', port=28015)
 
     def create_account(self, user, psw):
-        self.c.execute('SELECT * FROM userbase')
-        data = self.c.fetchall()
-        for row in data:
-            if row[0] == user or row[1] == psw:
-                return False
+        data = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)
+        if user in str(data):
+            return False
 
-        self.c.execute('INSERT INTO userbase (Username, Password) VALUES(?, ?)', (user, psw))
-        self.conn.commit()
+        r.db("screenshare").table("userbase").insert({"user": user, "psw": psw}).run(self.connection)
         return True
 
     def verification(self, user, psw):
-        self.c.execute('SELECT * FROM userbase WHERE Username == ? and Password == ?', (user, psw))
-        data = self.c.fetchall()
-        if data:
-            return True
+        if len(user) and len(psw) > 0:
+            data_user = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)
+            data_psw = r.db("screenshare").table("userbase").filter(r.row["psw"] == psw).run(self.connection)
+
+            if user in str(data_user) and psw in str(data_psw):
+                return True
         return False
 
     def close(self):
-        self.c.close()
-        self.conn.close()
+        self.connection.close()

@@ -33,7 +33,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 customer_thread.daemon = True
                 customer_thread.start()
                 self.con = False
-            except ValueError:
+            except:
                 pass
 
     def send_request(self):
@@ -51,9 +51,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 handler_thread.daemon = True
                 handler_thread.start()
                 self.close()
-            except ValueError:
+            except:
                 self.fail_msg("Could Not Connect To Client")
-        except ValueError:
+        except:
             self.fail_msg("Invalid Input Given")
 
     def fail_msg(self, text):

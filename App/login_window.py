@@ -15,23 +15,26 @@ class LoginWindow(QtWidgets.QMainWindow):
         id_text = self.username_check.toPlainText()
         pass_text = self.password_check.text()
 
-        db = UserBase()
-        if db.verification(id_text, pass_text):
-            self.logged_in = True
-            db.close()
-            self.close()
-        else:
-            db.close()
-            self.failed_login()
+        try:
+            db = UserBase()
+            if db.verification(id_text, pass_text):
+                self.logged_in = True
+                db.close()
+                self.close()
+            else:
+                db.close()
+                self.fail_msg("Username or password are incorrect!")
+        except:
+            self.fail_msg("Unable to connect to server")
 
     def signup(self):
         self.su = SignUpWindow()
         self.su.show()
 
-    def failed_login(self):
+    def fail_msg(self, text):
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
-        msg.setText("Username or password are incorrect!")
+        msg.setText(text)
         msg.setWindowTitle("Error")
         msg.exec_()
 
