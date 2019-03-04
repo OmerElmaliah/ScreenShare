@@ -3,6 +3,7 @@ from customer import Customer
 from handler import Handler
 import threading
 import socket
+from DB.idbase import IdBase
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -12,6 +13,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.setup_ui(self)
+        self.init_db_instance()
         self.send_request_button.clicked.connect(self.send_request)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip, self.port))
@@ -62,6 +64,13 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.setText(text)
         msg.setWindowTitle("Error")
         msg.exec_()
+
+    def init_db_instance(self):
+        db = IdBase()
+        idu, idp = db.create_new_instance(self.ip)
+        self.id_main_text.setPlainText(idu)
+        self.id_main_password.setPlainText(idp)
+        db.close()
 
     def setup_ui(self, main_window):
         main_window.setObjectName("main_window")
