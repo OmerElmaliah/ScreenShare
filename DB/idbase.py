@@ -13,19 +13,18 @@ class IdBase(object):
         if st in data:
             r.db("screenshare").table("idbase").filter(r.row["id"] == st).delete(self.connection)
 
-        id_user = binascii.hexlify(os.urandom(16))
-        id_psw = random.randint(1001, 4999)
+        id_user = str(binascii.hexlify(os.urandom(8)))
+        id_user = id_user[2:len(id_user) - 2]
         r.db("screenshare").table("idbase").insert({"id_user": id_user,
-                                                    "id_psw": id_psw,
                                                     "id": st}).run(self.connection)
-        return id_user, id_psw
+        return id_user
 
-    def get_id(self, idu, idp):
-        data = r.db("screenshare").table("idbase").filter(r.row["id_user"] == idu,
-                                                            r.row["id_psw"] == idp).run(self.connection)
-        if (idu in data) and (idp in data):
+    def get_id(self, idu):
+        data = r.db("screenshare").table("idbase").filter(r.row["id_user"] == idu).run(self.connection)
+        if idu in data:
             print(data)
             # return id
 
     def close(self):
         self.connection.close()
+
