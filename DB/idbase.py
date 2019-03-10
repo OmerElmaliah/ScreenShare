@@ -23,9 +23,9 @@ class IdBase(object):
 
     def get_id(self, idu, idp):
         data = r.db("screenshare").table("idbase").filter(r.row["id_user"] == idu,
-                                                            r.row["id_psw"] == idp).run(self.connection)
+                                                          r.row["id_psw"] == idp).run(self.connection)
         if (idu in data) and (idp in data):
-            print(data)
+            pass
             # return id
 
     def close(self):

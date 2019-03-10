@@ -9,6 +9,7 @@ from DB.idbase import IdBase
 class MainWindow(QtWidgets.QMainWindow):
     ip = '192.168.1.174'
     port = 8883
+    new_port = 8885
 
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
@@ -28,9 +29,8 @@ class MainWindow(QtWidgets.QMainWindow):
         while self.con:
             try:
                 iden = self.socket.recv(2048).decode('utf-8')
-                iden_port = int(self.socket.recv(2048).decode('utf-8')) + 1
 
-                customer = Customer(self.ip, self.port + 1, iden, iden_port)
+                customer = Customer(self.ip, self.new_port, iden, self.new_port)
                 customer_thread = threading.Thread(target=customer.run)
                 customer_thread.daemon = True
                 customer_thread.start()
@@ -40,21 +40,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def send_request(self):
         """Creates a variable type Handler and starts working"""
+        # TODO: SET UP NEW IDEN FOR IP, CHECK IF EXISTS
         try:
             iden = self.id_customer_text.toPlainText()
-            pass_iden = int(self.id_customer_pass_text.toPlainText())
+            pass_iden = self.id_customer_pass_text.toPlainText()
 
-            try:
-                self.socket.sendto(self.ip.encode('utf-8'), (iden, pass_iden))
-                self.socket.sendto(str(self.port).encode('utf-8'), (iden, pass_iden))
+            db = IdBase()
+            if db.get_id(iden, pass_iden):
+                try:
+                    self.socket.sendto(self.ip.encode('utf-8'), (iden, self.port))
 
-                handler = Handler(self.ip, self.port + 1, iden, pass_iden + 1)
-                handler_thread = threading.Thread(target=handler.run)
-                handler_thread.daemon = True
-                handler_thread.start()
-                self.close()
-            except:
-                self.fail_msg("Could Not Connect To Client")
+                    handler = Handler(self.ip, self.new_port, iden, self.new_port)
+                    handler_thread = threading.Thread(target=handler.run)
+                    handler_thread.daemon = True
+                    handler_thread.start()
+                    self.close()
+                except:
+                    self.fail_msg("Could Not Connect To Client")
         except:
             self.fail_msg("Invalid Input Given")
 
