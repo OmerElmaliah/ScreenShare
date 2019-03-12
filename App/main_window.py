@@ -46,17 +46,20 @@ class MainWindow(QtWidgets.QMainWindow):
             pass_iden = self.id_customer_pass_text.toPlainText()
 
             db = IdBase()
-            if db.get_id(iden, pass_iden):
+            con, cust = db.get_id(iden, pass_iden)
+            if con:
                 try:
-                    self.socket.sendto(self.ip.encode('utf-8'), (iden, self.port))
+                    self.socket.sendto(self.ip.encode('utf-8'), (cust, self.port))
 
-                    handler = Handler(self.ip, self.new_port, iden, self.new_port)
+                    handler = Handler(self.ip, self.new_port, cust, self.new_port)
                     handler_thread = threading.Thread(target=handler.run)
                     handler_thread.daemon = True
                     handler_thread.start()
                     self.close()
                 except:
                     self.fail_msg("Could Not Connect To Client")
+            else:
+                self.fail_msg("Could Not Find User")
         except:
             self.fail_msg("Invalid Input Given")
 

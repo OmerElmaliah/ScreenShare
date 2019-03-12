@@ -9,9 +9,10 @@ class IdBase(object):
         self.connection = r.connect(host='192.168.1.174', port=28015)
 
     def create_new_instance(self, st):
-        data = r.db("screenshare").table("idbase").filter(r.row["id"] == st).run(self.connection)
-        if st in data:
-            r.db("screenshare").table("idbase").filter(r.row["id"] == st).delete(self.connection)
+        data = r.db("screenshare").table("idbase").run(self.connection)
+        for cust in data:
+            if st == cust["id"]:
+                r.db("screenshare").table("idbase").filter(r.row["id"] == st).delete().run(self.connection)
 
         id_user = str(binascii.hexlify(os.urandom(8)))
         id_user = id_user[2:len(id_user) - 2]
@@ -22,11 +23,13 @@ class IdBase(object):
         return id_user, id_psw
 
     def get_id(self, idu, idp):
-        data = r.db("screenshare").table("idbase").filter(r.row["id_user"] == idu,
-                                                          r.row["id_psw"] == idp).run(self.connection)
-        if (idu in data) and (idp in data):
-            pass
-            # return id
+        data = r.db("screenshare").table("idbase").run(self.connection)
+        print(data)
+        for cust in data:
+            if idu == cust["id_user"]:
+                return True, cust["id"]
+
+        return False, ''
 
     def close(self):
         self.connection.close()
