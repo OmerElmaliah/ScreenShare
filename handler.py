@@ -6,6 +6,8 @@ import os.path
 import threading
 from pynput import mouse, keyboard
 import pickle
+import ssl
+from dtls import do_patch
 
 
 class Handler(object):
@@ -38,7 +40,8 @@ class Handler(object):
         self.port_src = port_src
         self.ip_dst = ip_dst
         self.port_dst = port_dst
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        do_patch()
+        self.socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_DGRAM))
         self.socket.bind((self.ip_src, self.port_src))
         self.window = QtWidgets.QLabel()
         self.window.showFullScreen()
