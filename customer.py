@@ -5,8 +5,6 @@ import threading
 import pickle
 import pyautogui
 from mss import mss
-from dtls import do_patch
-import ssl
 
 
 class Customer(object):
@@ -15,8 +13,7 @@ class Customer(object):
         self.port_src = port_src
         self.ip_dst = ip_dst
         self.port_dst = port_dst
-        do_patch()
-        self.socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_DGRAM))
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
         pyautogui.FAILSAFE = False

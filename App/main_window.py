@@ -4,8 +4,6 @@ from handler import Handler
 import threading
 import socket
 from DB.idbase import IdBase
-import ssl
-from dtls import do_patch
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -18,8 +16,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_ui(self)
         self.init_db_instance()
         self.send_request_button.clicked.connect(self.send_request)
-        do_patch()
-        self.socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_DGRAM))
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip, self.port))
         self.con = True
 

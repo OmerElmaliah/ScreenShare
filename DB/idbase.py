@@ -5,6 +5,7 @@ import random
 
 
 class IdBase(object):
+    # TODO: Reorganize accordingly to dataserver
     def __init__(self):
         self.connection = r.connect(host='192.168.1.174', port=28015)
 

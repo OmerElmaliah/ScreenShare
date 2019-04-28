@@ -1,27 +1,30 @@
-import rethinkdb as r
+import socket
 
 
 class UserBase(object):
+    # TODO: Reorganize accordingly to dataserver
     def __init__(self):
-        self.connection = r.connect(host='192.168.1.174', port=28015)
-        # create database 'screenshare' and table 'userbase'
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        client_socket.connect(('192.168.1.174', 8880))
 
     def create_account(self, user, psw):
-        data = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)
-        if user in str(data):
-            return False
+        self.c.execute('SELECT * FROM userbase')
+        data = self.c.fetchall()
+        for row in data:
+            if row[0] == user:
+                return False
 
-        r.db("screenshare").table("userbase").insert({"user": user, "psw": psw}).run(self.connection)
+        self.c.execute('INSERT INTO userbase (Username, Password) VALUES(?, ?)', (user, psw))
+        self.conn.commit()
         return True
 
     def verification(self, user, psw):
-        if len(user) and len(psw) > 0:
-            data_user = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)
-            data_psw = r.db("screenshare").table("userbase").filter(r.row["psw"] == psw).run(self.connection)
-
-            if user in str(data_user) and psw in str(data_psw):
-                return True
+        self.c.execute('SELECT * FROM userbase WHERE Username == ? and Password == ?', (user, psw))
+        data = self.c.fetchall()
+        if data:
+            return True
         return False
 
     def close(self):
-        self.connection.close()
+        self.c.close()
+        self.conn.close()
