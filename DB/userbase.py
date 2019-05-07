@@ -1,30 +1,30 @@
 import socket
+import pickle
+
+
+IP = '192.168.1.174'
+PORT = 8888
 
 
 class UserBase(object):
-    # TODO: Reorganize accordingly to dataserver
+    # TODO: Reorganize accordingly to dataserver(qthread?)
     def __init__(self):
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        client_socket.connect(('192.168.1.174', 8880))
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_socket.connect(('192.168.1.174', 8888))
 
     def create_account(self, user, psw):
-        self.c.execute('SELECT * FROM userbase')
-        data = self.c.fetchall()
-        for row in data:
-            if row[0] == user:
-                return False
+        self.client_socket.send("ub-ca".encode('utf-8'))
+        self.client_socket.send(user.encode('utf-8'))
+        self.client_socket.send(psw.encode('utf-8'))
 
-        self.c.execute('INSERT INTO userbase (Username, Password) VALUES(?, ?)', (user, psw))
-        self.conn.commit()
-        return True
+        return pickle.loads(self.client_socket.recv(1024))
 
     def verification(self, user, psw):
-        self.c.execute('SELECT * FROM userbase WHERE Username == ? and Password == ?', (user, psw))
-        data = self.c.fetchall()
-        if data:
-            return True
-        return False
+        self.client_socket.send("ub-ver".encode('utf-8'))
+        self.client_socket.send(user.encode('utf-8'))
+        self.client_socket.send(psw.encode('utf-8'))
+
+        return pickle.loads(self.client_socket.recv(1024))
 
     def close(self):
-        self.c.close()
-        self.conn.close()
+        self.client_socket.close()
