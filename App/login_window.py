@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
 from App.signup_window import SignUpWindow
+from App.main_window import MainWindow
 from DB.userbase import UserBase
 
 
@@ -17,10 +18,11 @@ class LoginWindow(QtWidgets.QMainWindow):
 
         try:
             db = UserBase()
-            if db.verification(id_text, pass_text):
-                self.logged_in = True
+            if db.verification(id_text, pass_text):  # Identifies the user with the given input
                 db.close()
-                self.close()
+                self.close()  # Closes current window
+                main_window = MainWindow()
+                main_window.show()  # Opens up the main window
             else:
                 db.close()
                 self.dialog_window("Username or password are incorrect!")
