@@ -1,30 +1,27 @@
-import socket
-import pickle
-
-
-IP = '192.168.1.174'
-PORT = 8888
+import rethinkdb as r
 
 
 class UserBase(object):
-    # TODO: Reorganize accordingly to dataserver(qthread?)
     def __init__(self):
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(('192.168.1.174', 8888))
+        self.connection = r.connect(host='127.0.0.1', port=28015)
+        # create database 'screenshare' and table 'userbase'
 
     def create_account(self, user, psw):
-        self.client_socket.send("ub-ca".encode('utf-8'))
-        self.client_socket.send(user.encode('utf-8'))
-        self.client_socket.send(psw.encode('utf-8'))
+        data = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)
+        if user in str(data):
+            return False
 
-        return pickle.loads(self.client_socket.recv(1024))
+        r.db("screenshare").table("userbase").insert({"user": user, "psw": psw}).run(self.connection)
+        return True
 
     def verification(self, user, psw):
-        self.client_socket.send("ub-ver".encode('utf-8'))
-        self.client_socket.send(user.encode('utf-8'))
-        self.client_socket.send(psw.encode('utf-8'))
+        if len(user) and len(psw) > 0:
+            data_user = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)
+            data_psw = r.db("screenshare").table("userbase").filter(r.row["psw"] == psw).run(self.connection)
 
-        return pickle.loads(self.client_socket.recv(1024))
+            if user in str(data_user) and psw in str(data_psw):
+                return True
+        return False
 
     def close(self):
-        self.client_socket.close()
+        self.connection.close()

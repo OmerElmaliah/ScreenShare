@@ -7,7 +7,7 @@ from DB.idbase import IdBase
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '192.168.1.174'
+    ip = '127.0.0.1'
     port = 8883
     new_port = 8885
 

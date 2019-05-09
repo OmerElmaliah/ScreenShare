@@ -3,8 +3,6 @@ from PyQt5 import QtWidgets
 from App.main_window import MainWindow
 from App.login_window import LoginWindow
 import sys
-import multiprocessing
-import threading
 
 
 LOGIN_CONDITION = False
@@ -29,14 +27,10 @@ def setup_main():
 
 
 def main():
-    login_thread = threading.Thread(target=setup_login)
-    login_thread.start()
-    login_thread.join()
+    setup_login()
 
     if LOGIN_CONDITION:
-        main_process = multiprocessing.Process(target=setup_main)
-        main_process.start()
-        main_process.join()
+        setup_main()
 
 
 if __name__ == '__main__':
