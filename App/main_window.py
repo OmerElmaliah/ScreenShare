@@ -40,7 +40,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def send_request(self):
         """Creates a variable type Handler and starts working"""
-        # TODO: SET UP NEW IDEN FOR IP, CHECK IF EXISTS
         try:
             iden = self.id_customer_text.toPlainText()
             pass_iden = self.id_customer_pass_text.toPlainText()
@@ -57,13 +56,13 @@ class MainWindow(QtWidgets.QMainWindow):
                     handler_thread.start()
                     self.close()
                 except:
-                    self.fail_msg("Could Not Connect To Client")
+                    self.dialog_window("Could Not Connect To Client")
             else:
-                self.fail_msg("Could Not Find User")
+                self.dialog_window("Could Not Find User")
         except:
-            self.fail_msg("Invalid Input Given")
+            self.dialog_window("Invalid Input Given")
 
-    def fail_msg(self, text):
+    def dialog_window(self, text):
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setText(text)
@@ -131,7 +130,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def retranslateUi(self, main_window):
         _translate = QtCore.QCoreApplication.translate
-        main_window.setWindowTitle(_translate("main_window", "MainWindow"))
+        main_window.setWindowTitle(_translate("main_window", "ScreenShare"))
         self.id_customer.setHtml(_translate("main_window",
                                             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

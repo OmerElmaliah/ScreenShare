@@ -10,7 +10,7 @@ class LoginWindow(QtWidgets.QMainWindow):
         self.setup_ui(self)
         self.login_button.clicked.connect(self.login)
         self.signup_button.clicked.connect(self.signup)
-        self.logged_in = False
+        self.su = SignUpWindow()
 
     def login(self):
         id_text = self.username_check.toPlainText()
@@ -20,6 +20,7 @@ class LoginWindow(QtWidgets.QMainWindow):
             db = UserBase()
             if db.verification(id_text, pass_text):  # Identifies the user with the given input
                 db.close()
+                self.su.close()
                 self.close()  # Closes current window
                 main_window = MainWindow()
                 main_window.show()  # Opens up the main window
@@ -30,7 +31,6 @@ class LoginWindow(QtWidgets.QMainWindow):
             self.dialog_window("Unable to connect to server")
 
     def signup(self):
-        self.su = SignUpWindow()
         self.su.show()
 
     def dialog_window(self, text):
@@ -85,7 +85,7 @@ class LoginWindow(QtWidgets.QMainWindow):
 
     def retranslateUi(self, main_window):
         _translate = QtCore.QCoreApplication.translate
-        main_window.setWindowTitle(_translate("main_window", "MainWindow"))
+        main_window.setWindowTitle(_translate("main_window", "Login"))
         self.main_text.setHtml(_translate("main_window",
                                           "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                           "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

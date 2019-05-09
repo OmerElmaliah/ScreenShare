@@ -17,7 +17,6 @@ class Customer(object):
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
         pyautogui.FAILSAFE = False
-        # TODO: Add an exit button with exit_button_ui.py
 
     def run(self):
         work_thread = threading.Thread(target=self.start_work)

@@ -15,24 +15,24 @@ class SignUpWindow(QtWidgets.QMainWindow):
             if user and psw:
                 db = UserBase()
                 if db.create_account(user, psw):
-                    msg = QtWidgets.QMessageBox()
-                    msg.setText("User created, You may now login")
-                    msg.setWindowTitle("Success")
-                    msg.exec_()
+                    self.dialog_window("User created, You may now login", "suc")
                     db.close()
                     self.close()
                 else:
-                    self.fail_msg("Username already taken!")
+                    self.dialog_window("Username already taken!", "er")
             else:
-                self.fail_msg("Please enter valid input")
+                self.dialog_window("Please enter valid input", "er")
         except:
-            self.fail_msg("Could not connect to server")
+            self.dialog_window("Could not connect to server", "er")
 
-    def fail_msg(self, text):
+    def dialog_window(self, text, msg_type):
         msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setText(text)
-        msg.setWindowTitle("Error")
+        if msg_type == "er":
+            msg.setWindowTitle("Error")
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+        elif msg_type == "suc":
+            msg.setWindowTitle("Success")
         msg.exec_()
 
     def setup_ui(self, signup_screen):
@@ -68,7 +68,7 @@ class SignUpWindow(QtWidgets.QMainWindow):
 
     def retranslateUi(self, signup_screen):
         _translate = QtCore.QCoreApplication.translate
-        signup_screen.setWindowTitle(_translate("signup_screen", "Signup - Screenshare"))
+        signup_screen.setWindowTitle(_translate("signup_screen", "Signup"))
         self.username_text.setHtml(_translate("signup_screen", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
