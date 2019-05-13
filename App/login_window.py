@@ -26,18 +26,18 @@ class LoginWindow(QtWidgets.QMainWindow):
                 main_window.show()  # Opens up the main window
             else:
                 db.close()
-                self.dialog_window("Username or password are incorrect!")
+                self.dialog_window("Username or password are incorrect!", "Incorrect Input")
         except:
-            self.dialog_window("Unable to connect to server")
+            self.dialog_window("Unable to connect to server", "Connection Failed")
 
     def signup(self):
         self.su.show()
 
-    def dialog_window(self, text):
+    def dialog_window(self, text, title):
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setText(text)
-        msg.setWindowTitle("Error")
+        msg.setWindowTitle(title)
         msg.exec_()
 
     def setup_ui(self, main_window):

@@ -56,17 +56,17 @@ class MainWindow(QtWidgets.QMainWindow):
                     handler_thread.start()
                     self.close()
                 except:
-                    self.dialog_window("Could Not Connect To Client")
+                    self.dialog_window("Could Not Connect To Client", "Connection Failed")
             else:
-                self.dialog_window("Could Not Find User")
+                self.dialog_window("Could Not Find User", "Invalid User")
         except:
-            self.dialog_window("Invalid Input Given")
+            self.dialog_window("Invalid Input Given", "Invalid Input")
 
-    def dialog_window(self, text):
+    def dialog_window(self, text, title):
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setText(text)
-        msg.setWindowTitle("Error")
+        msg.setWindowTitle(title)
         msg.exec_()
 
     def init_db_instance(self):
