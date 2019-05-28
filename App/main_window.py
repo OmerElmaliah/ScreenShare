@@ -43,6 +43,9 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             iden = self.id_customer_text.toPlainText()
             pass_iden = self.id_customer_pass_text.toPlainText()
+            server_connection = "Could Not Connect To Client"
+            no_user = "Could Not Find User"
+            invalid_input = "Invalid Input Given"
 
             db = IdBase()
             con, cust = db.get_id(iden, pass_iden)
@@ -56,11 +59,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     handler_thread.start()
                     self.close()
                 except:
-                    self.dialog_window("Could Not Connect To Client", "Connection Failed")
+                    self.dialog_window(server_connection, "Connection Failed")
             else:
-                self.dialog_window("Could Not Find User", "Invalid User")
+                self.dialog_window(no_user, "Invalid User")
         except:
-            self.dialog_window("Invalid Input Given", "Invalid Input")
+            self.dialog_window(invalid_input, "Invalid Input")
 
     def dialog_window(self, text, title):
         msg = QtWidgets.QMessageBox()

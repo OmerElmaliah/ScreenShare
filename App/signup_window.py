@@ -12,18 +12,24 @@ class SignUpWindow(QtWidgets.QMainWindow):
         try:
             user = self.username_edit.toPlainText()
             psw = self.password_edit.text()
+
+            user_create = "User created, You may now login"
+            user_taken = "Username already taken!"
+            inv_input = "Please enter valid input"
+            server_connection = "Could not connect to server"
+
             if user and psw:
                 db = UserBase()
                 if db.create_account(user, psw):
-                    self.dialog_window("User created, You may now login", "User", "suc")
+                    self.dialog_window(user_create, "User", "suc")
                     db.close()
                     self.close()
                 else:
-                    self.dialog_window("Username already taken!", "User", "er")
+                    self.dialog_window(user_taken, "User", "er")
             else:
-                self.dialog_window("Please enter valid input", "Invalid Input", "er")
+                self.dialog_window(inv_input, "Invalid Input", "er")
         except:
-            self.dialog_window("Could not connect to server", "Connection Issue", "er")
+            self.dialog_window(server_connection, "Connection Issue", "er")
 
     def dialog_window(self, text, title, msg_type):
         msg = QtWidgets.QMessageBox()

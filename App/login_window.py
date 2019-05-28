@@ -16,6 +16,9 @@ class LoginWindow(QtWidgets.QMainWindow):
         id_text = self.username_check.toPlainText()
         pass_text = self.password_check.text()
 
+        inv_input = "Username or password are incorrect!"
+        server_connection = "Unable to connect to server"
+
         try:
             db = UserBase()
             if db.verification(id_text, pass_text):  # Identifies the user with the given input
@@ -26,9 +29,9 @@ class LoginWindow(QtWidgets.QMainWindow):
                 main_window.show()  # Opens up the main window
             else:
                 db.close()
-                self.dialog_window("Username or password are incorrect!", "Incorrect Input")
+                self.dialog_window(inv_input, "Incorrect Input")
         except:
-            self.dialog_window("Unable to connect to server", "Connection Failed")
+            self.dialog_window(server_connection, "Connection Failed")
 
     def signup(self):
         self.su.show()
