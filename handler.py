@@ -52,9 +52,9 @@ class Handler(object):
     def recv_img(self):
         while True:
             rewrite_data = None
-            if os.path.isfile('D:\images\img.png'):
-                os.remove('D:\images\img.png')
-            img = open('D:\images\img.png', 'wb')
+            if os.path.isfile(r'C:\images\img.png'):
+                os.remove(r'C:\images\img.png')
+            img = open(r'C:\images\img.png', 'wb')
             while True:
                 data = self.socket.recv(8192)
                 if rewrite_data is None:
@@ -65,7 +65,7 @@ class Handler(object):
                     img.write(rewrite_data)
                     img.close()
 
-                    img_display = QPixmap('D:\images\img.png')
+                    img_display = QPixmap(r'C:\images\img.png')
                     self.window.setPixmap(img_display)
                     self.window.setScaledContents(True)
                     self.window.update()

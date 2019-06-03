@@ -7,7 +7,7 @@ from DB.idbase import IdBase
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '127.0.0.1'
+    ip = '10.0.0.1'
     port = 8883
     new_port = 8885
 
@@ -34,6 +34,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 customer_thread = threading.Thread(target=customer.run)
                 customer_thread.daemon = True
                 customer_thread.start()
+                customer_thread.join()
                 self.con = False
             except:
                 pass
