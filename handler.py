@@ -6,10 +6,11 @@ import os.path
 import threading
 from pynput import mouse, keyboard
 import pickle
+import encryption as enc
 
 
 class Handler(object):
-    def __init__(self, ip_src, port_src, ip_dst, port_dst):
+    def __init__(self, ip_src, port_src, ip_dst, port_dst, key):
         self.comb = {'1': '!',
                      '2': '@',
                      '3': '#',
@@ -38,6 +39,7 @@ class Handler(object):
         self.port_src = port_src
         self.ip_dst = ip_dst
         self.port_dst = port_dst
+        self.key = key
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.window = QtWidgets.QLabel()
@@ -52,11 +54,11 @@ class Handler(object):
     def recv_img(self):
         while True:
             rewrite_data = None
-            if os.path.isfile(r'C:\images\img.png'):
-                os.remove(r'C:\images\img.png')
-            img = open(r'C:\images\img.png', 'wb')
+            if os.path.isfile('img.png'):
+                os.remove('img.png')
+            img = open('img.png', 'wb')
             while True:
-                data = self.socket.recv(8192)
+                data = enc.decrypt(self.socket.recv(8192), self.key)
                 if rewrite_data is None:
                     rewrite_data = data
                 else:
@@ -65,7 +67,7 @@ class Handler(object):
                     img.write(rewrite_data)
                     img.close()
 
-                    img_display = QPixmap(r'C:\images\img.png')
+                    img_display = QPixmap('img.png')
                     self.window.setPixmap(img_display)
                     self.window.setScaledContents(True)
                     self.window.update()

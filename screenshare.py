@@ -13,7 +13,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-"CURRENT BUGS:" \
-    "- Keyboard not working properly if launched from an alternate language other than English" \
-    "..."

@@ -4,7 +4,6 @@ import rethinkdb as r
 class UserBase(object):
     def __init__(self):
         self.connection = r.connect(host='127.0.0.1', port=28015)
-        # create database 'screenshare' and table 'userbase'
 
     def create_account(self, user, psw):
         data = r.db("screenshare").table("userbase").filter(r.row["user"] == user).run(self.connection)

@@ -7,7 +7,7 @@ from DB.idbase import IdBase
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '10.0.0.1'
+    ip = '10.0.0.4'
     port = 8883
     new_port = 8885
 
@@ -29,8 +29,9 @@ class MainWindow(QtWidgets.QMainWindow):
         while self.con:
             try:
                 iden = self.socket.recv(2048).decode('utf-8')
+                print(self.id_main_password)
 
-                customer = Customer(self.ip, self.new_port, iden, self.new_port)
+                customer = Customer(self.ip, self.new_port, iden, self.new_port, self.id_main_password)
                 customer_thread = threading.Thread(target=customer.run)
                 customer_thread.daemon = True
                 customer_thread.start()
@@ -54,7 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 try:
                     self.socket.sendto(self.ip.encode('utf-8'), (cust, self.port))
 
-                    handler = Handler(self.ip, self.new_port, cust, self.new_port)
+                    handler = Handler(self.ip, self.new_port, cust, self.new_port, pass_iden)
                     handler_thread = threading.Thread(target=handler.run)
                     handler_thread.daemon = True
                     handler_thread.start()

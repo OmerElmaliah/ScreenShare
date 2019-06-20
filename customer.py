@@ -5,14 +5,16 @@ import threading
 import pickle
 import pyautogui
 from mss import mss
+import encryption as enc
 
 
 class Customer(object):
-    def __init__(self, ip_src, port_src, ip_dst, port_dst):
+    def __init__(self, ip_src, port_src, ip_dst, port_dst, key):
         self.ip_src = ip_src
         self.port_src = port_src
         self.ip_dst = ip_dst
         self.port_dst = port_dst
+        self.key = key
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
@@ -33,7 +35,7 @@ class Customer(object):
             with open('img.png', 'rb') as screen_image:
                 img_data = screen_image.read(8192)
                 while img_data:
-                    self.socket.sendto(img_data, (self.ip_dst, self.port_dst))
+                    self.socket.sendto(enc.encrypt(img_data, self.key), (self.ip_dst, self.port_dst))
                     img_data = screen_image.read(8192)
                 self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
                 screen_image.close()
