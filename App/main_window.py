@@ -29,9 +29,8 @@ class MainWindow(QtWidgets.QMainWindow):
         while self.con:
             try:
                 iden = self.socket.recv(2048).decode('utf-8')
-                print(self.id_main_password)
 
-                customer = Customer(self.ip, self.new_port, iden, self.new_port, self.id_main_password)
+                customer = Customer(self.ip, self.new_port, iden, self.new_port, self.id_main_password.toPlainText())
                 customer_thread = threading.Thread(target=customer.run)
                 customer_thread.daemon = True
                 customer_thread.start()
