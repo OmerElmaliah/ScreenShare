@@ -58,7 +58,7 @@ class Handler(object):
                 os.remove('img.png')
             img = open('img.png', 'wb')
             while True:
-                data = enc.decrypt(self.socket.recv(8192), self.key)
+                data = bytes(enc.decrypt(str(self.socket.recv(8192)), self.key))
                 if rewrite_data is None:
                     rewrite_data = data
                 else:
