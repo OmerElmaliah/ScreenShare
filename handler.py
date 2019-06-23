@@ -6,8 +6,7 @@ import os.path
 import threading
 from pynput import mouse, keyboard
 import pickle
-import encryption as enc
-
+import ssl
 
 class Handler(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst, key):
@@ -40,7 +39,8 @@ class Handler(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket_init = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket = ssl.wrap_socket(self.socket_init, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
         self.socket.bind((self.ip_src, self.port_src))
         self.window = QtWidgets.QLabel()
         self.window.showFullScreen()

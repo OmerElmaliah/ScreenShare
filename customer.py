@@ -5,8 +5,7 @@ import threading
 import pickle
 import pyautogui
 from mss import mss
-import encryption as enc
-
+import ssl
 
 class Customer(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst, key):
@@ -15,7 +14,8 @@ class Customer(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket_init = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket = ssl.wrap_socket(self.socket_init, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
         self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
         pyautogui.FAILSAFE = False
