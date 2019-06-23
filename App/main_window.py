@@ -7,7 +7,7 @@ from DB.idbase import IdBase
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    ip = '10.0.0.4'
+    ip = '192.168.1.174'
     port = 8883
     new_port = 8885
 
@@ -41,12 +41,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def send_request(self):
         """Creates a variable type Handler and starts working"""
+        invalid_input = "Invalid Input Given"
+        server_connection = "Could Not Connect To Client"
+        no_user = "Could Not Find User"
+
         try:
             iden = self.id_customer_text.toPlainText()
             pass_iden = self.id_customer_pass_text.toPlainText()
-            server_connection = "Could Not Connect To Client"
-            no_user = "Could Not Find User"
-            invalid_input = "Invalid Input Given"
 
             db = IdBase()
             con, cust = db.get_id(iden, pass_iden)

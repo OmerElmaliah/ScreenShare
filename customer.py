@@ -15,8 +15,8 @@ class Customer(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.bind((self.ip_src, self.port_src))
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((ip_dst, port_dst))
         self.main_con = True
         pyautogui.FAILSAFE = False
 
@@ -35,9 +35,9 @@ class Customer(object):
             with open('img.png', 'rb') as screen_image:
                 img_data = str(screen_image.read(8192))
                 while img_data:
-                    self.socket.sendto(bytes(enc.encrypt(img_data, self.key), "utf8"), (self.ip_dst, self.port_dst))
+                    self.socket.send(bytes(enc.encrypt(img_data, self.key), "utf8"))
                     img_data = str(screen_image.read(8192))
-                self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
+                self.socket.send("Image sent!".encode('utf-8'))
                 screen_image.close()
 
     def event_filter(self):
