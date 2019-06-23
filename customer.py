@@ -15,8 +15,8 @@ class Customer(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((ip_dst, port_dst))
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
         pyautogui.FAILSAFE = False
 
@@ -35,9 +35,10 @@ class Customer(object):
             with open('img.png', 'rb') as screen_image:
                 img_data = str(screen_image.read(8192))
                 while img_data:
-                    self.socket.send(bytes(enc.encrypt(img_data, self.key), "utf8"))
+                    img_data = pickle.loads(enc.encrypt(img_data, self.key))
+                    self.socket.sendto(img_data, (self.ip_dst, self.port_dst))
                     img_data = str(screen_image.read(8192))
-                self.socket.send("Image sent!".encode('utf-8'))
+                self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
                 screen_image.close()
 
     def event_filter(self):

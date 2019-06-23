@@ -40,10 +40,8 @@ class Handler(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.ip_src, self.port_src))
-        self.socket.listen(1)
-        self.client_socket, self.socket_adress = self.socket.accept()
         self.window = QtWidgets.QLabel()
         self.window.showFullScreen()
         self.window.show()
@@ -60,7 +58,7 @@ class Handler(object):
                 os.remove('img.png')
             img = open('img.png', 'wb')
             while True:
-                data = bytes(enc.decrypt(str(self.client_socket.recv()), self.key))
+                data = bytes(enc.decrypt(pickle.loads(self.socket.recv(8192)), self.key), 'utf8')
                 if rewrite_data is None:
                     rewrite_data = data
                 else:
@@ -92,31 +90,31 @@ class Handler(object):
 
     def on_click(self, x, y, button, pressed):
         if button == mouse.Button.left and pressed:
-            self.socket.send(pickle.dumps("left pressed"))
+            self.socket.sendto(pickle.dumps("left pressed"), (self.ip_dst, self.port_dst))
         elif button == mouse.Button.left:
-            self.socket.send(pickle.dumps("left released"))
+            self.socket.sendto(pickle.dumps("left released"), (self.ip_dst, self.port_dst))
         elif button == mouse.Button.right and pressed:
-            self.socket.send(pickle.dumps("right pressed"))
+            self.socket.sendto(pickle.dumps("right pressed"), (self.ip_dst, self.port_dst))
         else:
-            self.socket.send(pickle.dumps("right released"))
+            self.socket.sendto(pickle.dumps("right released"), (self.ip_dst, self.port_dst))
 
     def on_move(self, x, y):
         cords = (x, y)
         if self.num == 10:
-            self.socket.send(pickle.dumps(cords))
+            self.socket.sendto(pickle.dumps(cords), (self.ip_dst, self.port_dst))
             self.num = 0
         else:
             self.num += 1
 
     def on_scroll(self, x, y, dx, dy):
         if dy == 1:
-            self.socket.send(pickle.dumps("up"))
+            self.socket.sendto(pickle.dumps("up"), (self.ip_dst, self.port_dst))
         elif dy == -1:
-            self.socket.send(pickle.dumps("down"))
+            self.socket.sendto(pickle.dumps("down"), (self.ip_dst, self.port_dst))
         elif dx == 1:
-            self.socket.send(pickle.dumps("rig2"))
+            self.socket.sendto(pickle.dumps("rig2"), (self.ip_dst, self.port_dst))
         elif dx == -1:
-            self.socket.send(pickle.dumps("lef2"))
+            self.socket.sendto(pickle.dumps("lef2"), (self.ip_dst, self.port_dst))
 
     def on_press(self, key):
         if 'shift' in str(key) and (not self.shift):
@@ -124,14 +122,14 @@ class Handler(object):
 
         elif self.shift and ('Key' not in str(key)) and (str(key)[1] in self.comb):
             key = self.comb[str(key)[1]]
-            self.socket.send(pickle.dumps("press: '" + str(key) + "'"))
+            self.socket.sendto(pickle.dumps("press: '" + str(key) + "'"), (self.ip_dst, self.port_dst))
 
         elif self.cap_shift and ('Key' not in str(key)):
             key = str(key)[1].upper()
-            self.socket.send(pickle.dumps("press: '" + str(key) + "'"))
+            self.socket.sendto(pickle.dumps("press: '" + str(key) + "'"), (self.ip_dst, self.port_dst))
 
         elif 'shift' not in str(key):
-            self.socket.send(pickle.dumps("press: " + str(key)))
+            self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
 
     def on_release(self, key):
         if 'caps_lock' in str(key) and (not self.cap_shift):
@@ -142,7 +140,7 @@ class Handler(object):
         if 'shift' in str(key) and self.shift:
             self.shift = False
         elif 'shift' not in str(key):
-            self.socket.send(pickle.dumps("release: " + str(key)))
+            self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
         self.socket.close()
