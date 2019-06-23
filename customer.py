@@ -5,7 +5,7 @@ import threading
 import pickle
 import pyautogui
 from mss import mss
-import ssl
+import encryption as enc
 
 
 class Customer(object):
@@ -15,9 +15,8 @@ class Customer(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket_init = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket = ssl.wrap_socket(self.socket_init, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
-        self.socket.connect((ip_dst, port_dst))
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((self.ip_src, self.port_src))
         self.main_con = True
         pyautogui.FAILSAFE = False
 
@@ -34,11 +33,11 @@ class Customer(object):
             cv2.imwrite("img.png", img_resized)
 
             with open('img.png', 'rb') as screen_image:
-                img_data = screen_image.read(8192)
+                img_data = str(screen_image.read(8192))
                 while img_data:
-                    self.socket.send(img_data)
-                    img_data = screen_image.read(8192)
-                self.socket.send("Image sent!".encode('utf-8'))
+                    self.socket.sendto(bytes(enc.encrypt(img_data, self.key), "utf8"), (self.ip_dst, self.port_dst))
+                    img_data = str(screen_image.read(8192))
+                self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
                 screen_image.close()
 
     def event_filter(self):
