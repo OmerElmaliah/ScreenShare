@@ -7,6 +7,7 @@ import pyautogui
 from mss import mss
 import ssl
 
+
 class Customer(object):
     def __init__(self, ip_src, port_src, ip_dst, port_dst, key):
         self.ip_src = ip_src
@@ -14,9 +15,9 @@ class Customer(object):
         self.ip_dst = ip_dst
         self.port_dst = port_dst
         self.key = key
-        self.socket_init = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket_init = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket = ssl.wrap_socket(self.socket_init, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
-        self.socket.bind((self.ip_src, self.port_src))
+        self.socket.connect((ip_dst, port_dst))
         self.main_con = True
         pyautogui.FAILSAFE = False
 
@@ -35,9 +36,9 @@ class Customer(object):
             with open('img.png', 'rb') as screen_image:
                 img_data = screen_image.read(8192)
                 while img_data:
-                    self.socket.sendto(img_data, (self.ip_dst, self.port_dst))
+                    self.socket.send(img_data)
                     img_data = screen_image.read(8192)
-                self.socket.sendto("Image sent!".encode('utf-8'), (self.ip_dst, self.port_dst))
+                self.socket.send("Image sent!".encode('utf-8'))
                 screen_image.close()
 
     def event_filter(self):

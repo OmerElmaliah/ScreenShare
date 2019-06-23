@@ -1,17 +1,7 @@
-"""Encrypt and Decrypt functions stored here"""
+import ssl
+import socket
 
 
-def encrypt(data, key):
-    new_str = []
-    for s in range(len(data)):
-        new_str.append(chr(ord(data[s]) + int(key[s % 4])))
-
-    return "".join(new_str)
-
-
-def decrypt(data, key):
-    new_str = []
-    for s in range(len(data)):
-        new_str.append(chr(ord(data[s]) - int(key[s % 4])))
-
-    return "".join(new_str)
+socket_init = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socket = ssl.wrap_socket(socket_init, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
+socket.bind(('127.0.0.1', 8888))
