@@ -1,5 +1,4 @@
 """Encrypt and Decrypt functions stored here"""
-import pickle
 
 
 def encrypt(data, key):

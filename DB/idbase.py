@@ -14,7 +14,7 @@ class IdBase(object):
             if st == cust["id"]:
                 r.db("screenshare").table("idbase").filter(r.row["id"] == st).delete().run(self.connection)
 
-        id_user = str(binascii.hexlify(os.urandom(8)))
+        id_user = str(binascii.hexlify(os.urandom(1)))  # change to 8
         id_user = id_user[2:len(id_user) - 2]
         id_psw = str(random.randint(1001, 4999))
         r.db("screenshare").table("idbase").insert({"id_user": id_user,
