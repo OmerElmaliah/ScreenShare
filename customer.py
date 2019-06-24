@@ -33,10 +33,10 @@ class Customer(object):
             cv2.imwrite("img.png", img_resized)
 
             with open('img.png', 'rb') as screen_image:
-                img_data = screen_image.read(1024)
+                img_data = screen_image.read(8192).decode('ISO-8859-1')
                 while img_data:
-                    self.socket.sendto(pickle.dumps(img_data), (self.ip_dst, self.port_dst))
-                    img_data = str(screen_image.read(1024))
+                    self.socket.sendto(pickle.dumps(enc.encrypt(img_data, self.key)), (self.ip_dst, self.port_dst))
+                    img_data = screen_image.read(8192).decode('ISO-8859-1')
                 self.socket.sendto(pickle.dumps("Image sent!"), (self.ip_dst, self.port_dst))
                 screen_image.close()
 

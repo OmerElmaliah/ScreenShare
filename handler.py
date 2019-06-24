@@ -58,8 +58,9 @@ class Handler(object):
                 os.remove('img.png')
             img = open('img.png', 'wb')
             while True:
-                data = pickle.loads(self.socket.recv(8192))
+                data = pickle.loads(self.socket.recv(16384))
                 if data != "Image sent!":
+                    data = enc.decrypt(data, self.key).encode('ISO-8859-1')
                     if rewrite_data is None:
                         rewrite_data = data
                     else:
