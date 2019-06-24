@@ -6,7 +6,7 @@ import random
 
 class IdBase(object):
     def __init__(self):
-        self.connection = r.connect(host='127.0.0.1', port=28015)
+        self.connection = r.connect(host='10.0.0.4', port=28015)
 
     def create_new_instance(self, st):
         data = r.db("screenshare").table("idbase").run(self.connection)

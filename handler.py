@@ -58,12 +58,15 @@ class Handler(object):
                 os.remove('img.png')
             img = open('img.png', 'wb')
             while True:
-                data = bytes(enc.decrypt(str(self.socket.recv(8192)), self.key))
-                if rewrite_data is None:
-                    rewrite_data = data
+                data = str(self.socket.recv(8192))
+                if not "Image sent!".encode('utf-8') in data:
+                    data = data[2:len(data) - 1]
+                    data = bytes(enc.decrypt(data, self.key), 'utf-8')
+                    if rewrite_data is None:
+                        rewrite_data = data
+                    else:
+                        rewrite_data = rewrite_data + data
                 else:
-                    rewrite_data = rewrite_data + data
-                if "Image sent!".encode('utf-8') in data:
                     img.write(rewrite_data)
                     img.close()
 
