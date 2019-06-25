@@ -139,6 +139,9 @@ class Handler(object):
         elif 'caps_lock' in str(key) and self.cap_shift:
             self.cap_shift = False
 
+        if self.shift and 'alt_l' in str(key):
+            self.socket.sendto(pickle.dumps("change_lang"), (self.ip_dst, self.port_dst))
+
         if 'shift' in str(key) and self.shift:
             self.shift = False
         elif 'shift' not in str(key):

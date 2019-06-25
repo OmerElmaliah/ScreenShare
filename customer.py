@@ -63,6 +63,8 @@ class Customer(object):
                 pyautogui.hscroll(175)
             elif "lef2" in data:
                 pyautogui.hscroll(-175)
+            elif "change_lang" in data:
+                pyautogui.hotkey('shift', 'altleft')
             elif "press:" in data:
                 if 'Key' in data:
                     pyautogui.keyDown(data[data.find('.') + 1:])
