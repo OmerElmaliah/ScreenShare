@@ -13,6 +13,7 @@ class LoginWindow(QtWidgets.QMainWindow):
         self.su = SignUpWindow()
 
     def login(self):
+        """Receives input and verifies if the input exists in the database, if so proceeds to the main window"""
         id_text = self.username_check.toPlainText()
         pass_text = self.password_check.text()
 
@@ -34,9 +35,16 @@ class LoginWindow(QtWidgets.QMainWindow):
             self.dialog_window(server_connection, "Connection Failed")
 
     def signup(self):
+        """Opens up the signup window"""
         self.su.show()
 
     def dialog_window(self, text, title):
+        """Opens up a dialog window for various uses
+
+        ARGS:
+            text(string) - The text displayed in the dialog window
+            title(string) - The text of the title of the dialog window
+        """
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setText(text)
@@ -44,6 +52,7 @@ class LoginWindow(QtWidgets.QMainWindow):
         msg.exec_()
 
     def setup_ui(self, main_window):
+        """Designs the main window's properties"""
         main_window.setObjectName("main_window")
         main_window.resize(800, 600)
         self.central_widget = QtWidgets.QWidget(main_window)
@@ -87,6 +96,7 @@ class LoginWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
+        """Designs the main window's texts"""
         _translate = QtCore.QCoreApplication.translate
         main_window.setWindowTitle(_translate("main_window", "Login"))
         self.main_text.setHtml(_translate("main_window",

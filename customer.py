@@ -21,11 +21,13 @@ class Customer(object):
         pyautogui.FAILSAFE = False
 
     def run(self):
+        """Calls 2 functions necessary to the customer's functioning, start_work via thread and event_filter"""
         work_thread = threading.Thread(target=self.start_work)
         work_thread.start()
         self.event_filter()
 
     def start_work(self):
+        """Captures and saves an image of the screen, sends the image encrypted to the handler"""
         while True:
             mss().shot(output="img.png")
             img = cv2.imread("img.png")
@@ -41,6 +43,7 @@ class Customer(object):
                 screen_image.close()
 
     def event_filter(self):
+        """Filters commands sent by the handler and executes them"""
         while self.main_con:
             data = pickle.loads(self.socket.recv(1024))
             if "right" in data and "pressed" in data:
@@ -79,8 +82,14 @@ class Customer(object):
                 pyautogui.moveTo(data)
 
     def set_connection_status(self, con):
+        """Sets connection status with the handler
+
+        ARGS:
+            con(boolean) - True if connection exists, False if not
+        """
         self.main_con = con
 
     def close_connection(self):
+        """Closes connection with the handler"""
         self.main_con = False
         self.socket.close()

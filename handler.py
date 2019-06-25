@@ -47,11 +47,13 @@ class Handler(object):
         self.window.show()
 
     def run(self):
+        """Calls 2 functions necessary to the handler's functioning, recv_img via thread and event_listener"""
         recv_img_thread = threading.Thread(target=self.recv_img)
         recv_img_thread.start()
         self.event_listener()
 
     def recv_img(self):
+        """Creates an empty image on the computer, receives data from customer and 'builds' a new image with the data"""
         while True:
             rewrite_data = None
             if os.path.isfile('img.png'):
@@ -76,6 +78,7 @@ class Handler(object):
                     break
 
     def event_listener(self):
+        """Listens for commands committed on the computer and calls relevant functions"""
         listener_keyboard = keyboard.Listener(
                 on_press=self.on_press,
                 on_release=self.on_release)
@@ -91,6 +94,13 @@ class Handler(object):
         listener_mouse.join()
 
     def on_click(self, x, y, button, pressed):
+        """Filters commands committed via mouse clicks, sends the customer which command to make
+
+        ARGS:
+            x && y(int) - Represents the location of the mouse on the screen
+            button(custom) - Represents the button pressed on the mouse
+            pressed(boolean) - True if button is down, False if up
+        """
         if button == mouse.Button.left and pressed:
             self.socket.sendto(pickle.dumps("left pressed"), (self.ip_dst, self.port_dst))
         elif button == mouse.Button.left:
@@ -101,6 +111,11 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("right released"), (self.ip_dst, self.port_dst))
 
     def on_move(self, x, y):
+        """Sends the customer the current location of the mouse on the screen
+
+        ARGS:
+            x && y(int) - Represents the location of the mouse on the screen
+        """
         cords = (x, y)
         if self.num == 10:
             self.socket.sendto(pickle.dumps(cords), (self.ip_dst, self.port_dst))
@@ -109,6 +124,13 @@ class Handler(object):
             self.num += 1
 
     def on_scroll(self, x, y, dx, dy):
+        """Filters mouse scroll commands and sends which command to make to the customer
+
+        ARGS:
+            x && y(int) - Represents the location of the mouse on the screen when scrolling
+            dy(int) - Vertical scrolling, Value is 1 if scrolling up, -1 if down
+            dx(int) - Horizontal scrolling, Value is 1 if scrolling right, -1 if left
+        """
         if dy == 1:
             self.socket.sendto(pickle.dumps("up"), (self.ip_dst, self.port_dst))
         elif dy == -1:
@@ -119,6 +141,7 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("lef2"), (self.ip_dst, self.port_dst))
 
     def on_press(self, key):
+        """Filters keyboard presses, sends the customer which key to press"""
         if 'shift' in str(key) and (not self.shift):
             self.shift = True
 
@@ -134,6 +157,7 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("press: " + str(key)), (self.ip_dst, self.port_dst))
 
     def on_release(self, key):
+        """Filters keyboard releases, sends the customer which key to releases"""
         if 'caps_lock' in str(key) and (not self.cap_shift):
             self.cap_shift = True
         elif 'caps_lock' in str(key) and self.cap_shift:
@@ -148,4 +172,5 @@ class Handler(object):
             self.socket.sendto(pickle.dumps("release: " + str(key)), (self.ip_dst, self.port_dst))
 
     def close_connection(self):
+        """Closes connection with the customer"""
         self.socket.close()

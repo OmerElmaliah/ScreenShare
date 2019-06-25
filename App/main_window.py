@@ -25,7 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         listen_thread.start()
 
     def listen_for_requests(self):
-        """Creates a variable type Customer and starts working"""
+        """Listens for any connection requests, if found runs the customer class via thread"""
         while self.con:
             try:
                 iden = self.socket.recv(2048).decode('utf-8')
@@ -40,7 +40,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
 
     def send_request(self):
-        """Creates a variable type Handler and starts working"""
+        """Sends a request for connection with another computer, Initially sends the data to the
+        database to obtain ip. Then creates a connection and starts the process"""
         try:
             iden = self.id_customer_text.toPlainText()
             pass_iden = self.id_customer_pass_text.toPlainText()
@@ -67,6 +68,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.dialog_window(invalid_input, "Invalid Input")
 
     def dialog_window(self, text, title):
+        """Opens up a dialog window for various uses
+
+        ARGS:
+            text(string) - The text displayed in the dialog window
+            title(string) - The text of the title of the dialog window
+        """
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setText(text)
@@ -74,6 +81,8 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.exec_()
 
     def init_db_instance(self):
+        """Establishes connection with the database server, assigns identity and identity password to the account
+        and adds them to the database"""
         db = IdBase()
         idu, idp = db.create_new_instance(self.ip)
         self.id_main_text.setPlainText(idu)
@@ -81,6 +90,7 @@ class MainWindow(QtWidgets.QMainWindow):
         db.close()
 
     def setup_ui(self, main_window):
+        """Designs the main window's properties"""
         main_window.setObjectName("main_window")
         main_window.resize(800, 600)
 
@@ -133,6 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
+        """Designs the main window's texts"""
         _translate = QtCore.QCoreApplication.translate
         main_window.setWindowTitle(_translate("main_window", "ScreenShare"))
         self.id_customer.setHtml(_translate("main_window",

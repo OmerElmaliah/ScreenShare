@@ -9,6 +9,8 @@ class SignUpWindow(QtWidgets.QMainWindow):
         self.signup_button.clicked.connect(self.sign_up)
 
     def sign_up(self):
+        """Receives input(Username and password) and verifies if the given input already exists in the database,
+        if not adds the input to the database for future sign ins"""
         try:
             user = self.username_edit.toPlainText()
             psw = self.password_edit.text()
@@ -32,6 +34,13 @@ class SignUpWindow(QtWidgets.QMainWindow):
             self.dialog_window(server_connection, "Connection Issue", "er")
 
     def dialog_window(self, text, title, msg_type):
+        """Opens up a dialog window for various uses
+
+                ARGS:
+                    text(string) - The text displayed in the dialog window
+                    title(string) - The text of the title of the dialog window
+                    msg_type(string) - Indicates which type of dialog will it be
+                """
         msg = QtWidgets.QMessageBox()
         msg.setText(text)
         if msg_type == "er":
@@ -42,6 +51,7 @@ class SignUpWindow(QtWidgets.QMainWindow):
         msg.exec_()
 
     def setup_ui(self, signup_screen):
+        """Designs the main window's properties"""
         signup_screen.setObjectName("signup_screen")
         signup_screen.resize(400, 300)
         self.username_text = QtWidgets.QTextBrowser(signup_screen)
@@ -73,6 +83,7 @@ class SignUpWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(signup_screen)
 
     def retranslateUi(self, signup_screen):
+        """Designs the main window's texts"""
         _translate = QtCore.QCoreApplication.translate
         signup_screen.setWindowTitle(_translate("signup_screen", "Signup"))
         self.username_text.setHtml(_translate("signup_screen", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"

@@ -9,6 +9,11 @@ class IdBase(object):
         self.connection = r.connect(host='10.0.0.4', port=28015)
 
     def create_new_instance(self, st):
+        """Assigns an ID and ID password to an account that logged in with the additional IP given
+
+        ARGS:
+            st(string) - IP of the account's computer
+        """
         data = r.db("screenshare").table("idbase").run(self.connection)
         for cust in data:
             if st == cust["id"]:
@@ -23,6 +28,12 @@ class IdBase(object):
         return id_user, id_psw
 
     def get_id(self, idu, idp):
+        """Filters the database in search of the IP of the user using the ID and ID password
+
+        ARGS:
+            idu(string) - ID of the user
+            idp(string) - ID password of the user
+        """
         data = r.db("screenshare").table("idbase").run(self.connection)
         for cust in data:
             if idu == cust["id_user"] and idp == cust["id_psw"]:
@@ -31,6 +42,7 @@ class IdBase(object):
         return False, ''
 
     def close(self):
+        """Closes connection with database"""
         self.connection.close()
 
 
